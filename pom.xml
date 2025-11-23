@@ -4,7 +4,7 @@
 
     <groupId>cn.com.qjun</groupId>
     <artifactId>dmsoft-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>dmsoft-java</name>
@@ -12,12 +12,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <jacob.version>1.21</jacob.version>
     </properties>
 
     <distributionManagement>
         <snapshotRepository>
             <id>qjun-snapshots</id>
-            <url>https://repository.qjun.com.cn:17443/repository/maven-snapshots/</url>
+            <url>https://nexus.qjun.com.cn:44307/repository/maven-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -28,7 +31,7 @@
         </snapshotRepository>
         <repository>
             <id>qjun-releases</id>
-            <url>https://repository.qjun.com.cn:17443/repository/maven-releases/</url>
+            <url>https://nexus.qjun.com.cn:44307/repository/maven-releases/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -40,6 +43,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>cn.com.qjun</groupId>
+            <artifactId>commons-geometry</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>5.14.0</version>
@@ -47,9 +55,14 @@
         <dependency>
             <groupId>com.jacob</groupId>
             <artifactId>jacob</artifactId>
-            <version>1.20</version>
-            <systemPath>${basedir}/libs/jacob.jar</systemPath>
-            <scope>system</scope>
+            <version>${jacob.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jacob</groupId>
+            <artifactId>jacob</artifactId>
+            <version>${jacob.version}</version>
+            <classifier>x86</classifier>
+            <type>dll</type>
         </dependency>
 
         <dependency>
@@ -85,7 +98,52 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>version.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>win32-x86/*</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
+            <!-- 将 DLL 文件复制到 classpath 中 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-jacob-dll</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.jacob</groupId>
+                                    <artifactId>jacob</artifactId>
+                                    <version>${jacob.version}</version>
+                                    <classifier>x86</classifier>
+                                    <type>dll</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <destFileName>jacob-${jacob.version}-x86.dll</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -96,90 +154,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.6.0</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/resources/assembly/with-local-libs.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- 指定在打包节点执行jar包合并操作 -->
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-install-plugin</artifactId>-->
-<!--                <version>3.1.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>install</id>-->
-<!--                        <goals>-->
-<!--                            <goal>install</goal>-->
-<!--                        </goals>-->
-<!--                        <phase>none</phase>-->
-<!--                        <configuration>-->
-<!--                            <skip>true</skip>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>install-file</id>-->
-<!--                        <goals>-->
-<!--                            <goal>install-file</goal>-->
-<!--                        </goals>-->
-<!--                        <phase>install</phase>-->
-<!--                        <configuration>-->
-<!--                            <file>${project.build.directory}/${project.build.finalName}-with-local-libs.jar</file>-->
-<!--                            <pomFile>src/main/resources/deploy-pom.xml</pomFile>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-deploy-plugin</artifactId>-->
-<!--                <version>3.1.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>deploy-file</id>-->
-<!--                        <goals>-->
-<!--                            <goal>deploy-file</goal>-->
-<!--                        </goals>-->
-<!--                        &lt;!&ndash; 跳过默认的发布包 &ndash;&gt;-->
-<!--                        <phase>deploy</phase>-->
-<!--                        <configuration>-->
-<!--                            &lt;!&ndash; deploy配置，指定将哪个目录下的jar包发布为这个工程的jar &ndash;&gt;-->
-<!--                            <file>${project.build.directory}/${project.build.finalName}-with-local-libs.jar</file>-->
-<!--                            &lt;!&ndash;-->
-<!--                            deploy配置，指定将deploy的jar打包使用的pom.xml文件，-->
-<!--                            即其他依赖这个jar包的工程按照哪个pom.xml文件来解析依赖-->
-<!--                            &ndash;&gt;-->
-<!--                            <pomFile>src/main/resources/deploy-pom.xml</pomFile>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>

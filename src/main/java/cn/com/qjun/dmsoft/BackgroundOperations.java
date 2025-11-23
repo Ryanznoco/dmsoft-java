@@ -1,6 +1,6 @@
 package cn.com.qjun.dmsoft;
 
-import cn.com.qjun.dmsoft.domain.Rect;
+import cn.com.qjun.commons.geometry.Rect;
 import cn.com.qjun.dmsoft.enums.DisplayMode;
 import cn.com.qjun.dmsoft.enums.KeypadMode;
 import cn.com.qjun.dmsoft.enums.MouseMode;
@@ -428,7 +428,7 @@ public class BackgroundOperations {
      * @param rect 锁定的区域
      */
     public void lockMouseRect(Rect rect) {
-        dmSoft.callAndCheckResultEq1("LockMouseRect", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2());
+        dmSoft.callAndCheckResultEq1("LockMouseRect", rect.x1(), rect.y1(), rect.x2(), rect.y2());
     }
 
     /**

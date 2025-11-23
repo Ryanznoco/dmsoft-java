@@ -1,6 +1,9 @@
 package cn.com.qjun.dmsoft;
 
-import cn.com.qjun.dmsoft.domain.*;
+import cn.com.qjun.commons.geometry.Point;
+import cn.com.qjun.commons.geometry.Rect;
+import cn.com.qjun.commons.geometry.Size;
+import cn.com.qjun.dmsoft.model.*;
 import cn.com.qjun.dmsoft.enums.FindDirection;
 import com.jacob.com.Variant;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +54,7 @@ public class ColourOperations {
      *             当然这里也可以指定全路径名.
      */
     public void capture(Rect rect, String file) {
-        dmSoft.callAndCheckResultEq1("Capture", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), file);
+        dmSoft.callAndCheckResultEq1("Capture", rect.x1(), rect.y1(), rect.x2(), rect.y2(), file);
     }
 
     /**
@@ -64,7 +67,7 @@ public class ColourOperations {
      * @param time  总共截取多久的动画，单位毫秒。
      */
     public void captureGif(Rect rect, String file, long delay, long time) {
-        dmSoft.callAndCheckResultEq1("CaptureGif", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), file, delay, time);
+        dmSoft.callAndCheckResultEq1("CaptureGif", rect.x1(), rect.y1(), rect.x2(), rect.y2(), file, delay, time);
     }
 
     /**
@@ -76,7 +79,7 @@ public class ColourOperations {
      * @param quality jpg压缩比率(1-100) 越大图片质量越好
      */
     public void captureJpg(Rect rect, String file, int quality) {
-        dmSoft.callAndCheckResultEq1("CaptureJpg", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), file, quality);
+        dmSoft.callAndCheckResultEq1("CaptureJpg", rect.x1(), rect.y1(), rect.x2(), rect.y2(), file, quality);
     }
 
     /**
@@ -87,7 +90,7 @@ public class ColourOperations {
      *             当然这里也可以指定全路径名.
      */
     public void capturePng(Rect rect, String file) {
-        dmSoft.callAndCheckResultEq1("CapturePng", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), file);
+        dmSoft.callAndCheckResultEq1("CapturePng", rect.x1(), rect.y1(), rect.x2(), rect.y2(), file);
     }
 
     /**
@@ -112,7 +115,7 @@ public class ColourOperations {
      * @return 颜色是否匹配
      */
     public boolean cmpColor(Point point, String color, double sim) {
-        long result = dmSoft.callForLong("CmpColor", point.getX(), point.getY(), color, sim);
+        long result = dmSoft.callForLong("CmpColor", point.x(), point.y(), color, sim);
         return result == 1L;
     }
 
@@ -158,7 +161,7 @@ public class ColourOperations {
      * @return 找到的坐标，如果没有找到返回null
      */
     public Point findColor(Rect rect, String color, double sim, FindDirection dir) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(color), new Variant(sim), new Variant(dir.getValue()), new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindColor", (Object[]) variants);
         if (result == 0L) {
@@ -180,8 +183,8 @@ public class ColourOperations {
      * @return 找到的坐标，如果没有找到返回null
      */
     public Point findColorBlock(Rect rect, String color, double sim, int count, Size size) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
-                new Variant(color), new Variant(sim), new Variant(count), new Variant(size.getWidth()), new Variant(size.getHeight()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
+                new Variant(color), new Variant(sim), new Variant(count), new Variant(size.width()), new Variant(size.height()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindColorBlock", (Object[]) variants);
         if (result == 0L) {
@@ -203,8 +206,8 @@ public class ColourOperations {
      * @return 返回所有颜色块信息的坐标值, 然后通过GetResultCount等接口来解析 (由于内存限制,返回的颜色数量最多为1800个左右)
      */
     public String findColorBlockEx(Rect rect, String color, double sim, int count, Size size) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
-                new Variant(color), new Variant(sim), new Variant(count), new Variant(size.getWidth()), new Variant(size.getHeight()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
+                new Variant(color), new Variant(sim), new Variant(count), new Variant(size.width()), new Variant(size.height()),
                 new Variant(0, true), new Variant(0, true)};
         return dmSoft.callForString("FindColorBlockEx", (Object[]) variants);
     }
@@ -221,7 +224,7 @@ public class ColourOperations {
      * @return 返回所有颜色信息的坐标值, 然后通过GetResultCount等接口来解析 (由于内存限制,返回的颜色数量最多为1800个左右)
      */
     public String findColorEx(Rect rect, String color, double sim, FindDirection dir) {
-        return dmSoft.callForString("FindColorEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), color, sim, dir.getValue());
+        return dmSoft.callForString("FindColorEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(), color, sim, dir.getValue());
     }
 
     /**
@@ -234,7 +237,7 @@ public class ColourOperations {
      * @return 找到的坐标，如果没有找到或部分颜色没有找到，返回null
      */
     public Point findMulColor(Rect rect, String color, double sim) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(color), new Variant(sim), new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindMulColor", (Object[]) variants);
         if (result == 0L) {
@@ -259,7 +262,7 @@ public class ColourOperations {
      * @return 找到的坐标(坐标为first_color所在坐标)，没有找到返回null
      */
     public Point findMultiColor(Rect rect, String firstColor, String offsetColor, double sim, FindDirection dir) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(firstColor), new Variant(offsetColor), new Variant(sim), new Variant(dir.getValue()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindMultiColor", (Object[]) variants);
@@ -285,7 +288,7 @@ public class ColourOperations {
      * @return 返回所有颜色信息的坐标值, 然后通过GetResultCount等接口来解析(由于内存限制, 返回的坐标数量最多为1800个左右)，坐标是first_color所在的坐标
      */
     public String findMultiColorEx(Rect rect, String firstColor, String offsetColor, double sim, FindDirection dir) {
-        return dmSoft.callForString("FindMultiColorEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        return dmSoft.callForString("FindMultiColorEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 firstColor, offsetColor, sim, dir.getValue());
     }
 
@@ -301,7 +304,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)和对应坐标(图片左上角坐标)，没有找到返回null
      */
     public FindResult findPic(Rect rect, List<String> picNames, String deltaColor, double sim, FindDirection dir) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(String.join("|", picNames)), new Variant(deltaColor), new Variant(sim), new Variant(dir.getValue()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindPic", (Object[]) variants);
@@ -323,7 +326,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)和对应坐标(图片左上角坐标)(由于内存限制, 返回的图片数量最多为1500个左右)
      */
     public List<FindResult> findPicEx(Rect rect, List<String> picNames, String deltaColor, double sim, FindDirection dir) {
-        String result = dmSoft.callForString("FindPicEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("FindPicEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 String.join("|", picNames), deltaColor, sim, dir.getValue());
         return convertFindResultList(result, false);
     }
@@ -343,7 +346,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)和对应坐标(图片左上角坐标)，没有找到返回null
      */
     public FindResult findPicMem(Rect rect, List<MemoryInfo> picInfos, String deltaColor, double sim, FindDirection dir) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(convertMemoryInfoList(picInfos)), new Variant(deltaColor), new Variant(sim), new Variant(dir.getValue()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindPicMem", (Object[]) variants);
@@ -369,7 +372,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)和对应坐标(图片左上角坐标)(由于内存限制, 返回的图片数量最多为1500个左右)
      */
     public List<FindResult> findPicMemEx(Rect rect, List<MemoryInfo> picInfos, String deltaColor, double sim, FindDirection dir) {
-        String result = dmSoft.callForString("FindPicMemEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("FindPicMemEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 convertMemoryInfoList(picInfos), deltaColor, sim, dir.getValue());
         return convertFindResultList(result, false);
     }
@@ -390,7 +393,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)和对应坐标(图片左上角坐标)，没有找到返回null
      */
     public FindResult findPicSim(Rect rect, List<String> picNames, String deltaColor, int sim, FindDirection dir) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(String.join("|", picNames)), new Variant(deltaColor), new Variant(sim), new Variant(dir.getValue()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindPicSim", (Object[]) variants);
@@ -416,7 +419,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)、匹配百分比和对应坐标(图片左上角坐标)(由于内存限制, 返回的图片数量最多为1500个左右)
      */
     public List<FindResult> findPicSimEx(Rect rect, List<String> picNames, String deltaColor, int sim, FindDirection dir) {
-        String result = dmSoft.callForString("FindPicSimEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("FindPicSimEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 String.join("|", picNames), deltaColor, sim, dir.getValue());
         return convertFindResultList(result, true);
     }
@@ -440,7 +443,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)和对应坐标(图片左上角坐标)，没有找到返回null
      */
     public FindResult findPicSimMem(Rect rect, List<MemoryInfo> picInfos, String deltaColor, int sim, FindDirection dir) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(convertMemoryInfoList(picInfos)), new Variant(deltaColor), new Variant(sim), new Variant(dir.getValue()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindPicSimMem", (Object[]) variants);
@@ -469,7 +472,7 @@ public class ColourOperations {
      * @return 找到的图片序号(从0开始索引)、匹配百分比和对应坐标(图片左上角坐标)(由于内存限制, 返回的图片数量最多为1500个左右)
      */
     public List<FindResult> findPicSimMemEx(Rect rect, List<MemoryInfo> picInfos, String deltaColor, int sim, FindDirection dir) {
-        String result = dmSoft.callForString("FindPicSimMemEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("FindPicSimMemEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 convertMemoryInfoList(picInfos), deltaColor, sim, dir.getValue());
         return convertFindResultList(result, true);
     }
@@ -487,7 +490,7 @@ public class ColourOperations {
      * @return 找到的形状所在坐标，没有找到返回null
      */
     public Point findShape(Rect rect, String offsetColor, double sim, FindDirection dir) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(offsetColor), new Variant(sim), new Variant(dir.getValue()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindPicSimMem", (Object[]) variants);
@@ -521,7 +524,7 @@ public class ColourOperations {
      * @return 颜色字符串
      */
     public String getAveHsv(Rect rect) {
-        return dmSoft.callForString("GetAveHSV", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2());
+        return dmSoft.callForString("GetAveHSV", rect.x1(), rect.y1(), rect.x2(), rect.y2());
     }
 
     /**
@@ -531,7 +534,7 @@ public class ColourOperations {
      * @return 颜色字符串
      */
     public String getAveRgb(Rect rect) {
-        return dmSoft.callForString("GetAveRGB", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2());
+        return dmSoft.callForString("GetAveRGB", rect.x1(), rect.y1(), rect.x2(), rect.y2());
     }
 
     /**
@@ -541,7 +544,7 @@ public class ColourOperations {
      * @return 颜色字符串(注意这里都是小写字符 ， 和工具相匹配)
      */
     public String getColor(Point point) {
-        return dmSoft.callForString("GetColor", point.getX(), point.getY());
+        return dmSoft.callForString("GetColor", point.x(), point.y());
     }
 
     /**
@@ -551,7 +554,7 @@ public class ColourOperations {
      * @return 颜色字符串
      */
     public String getColorHsv(Point point) {
-        return dmSoft.callForString("GetColorHSV", point.getX(), point.getY());
+        return dmSoft.callForString("GetColorHSV", point.x(), point.y());
     }
 
     /**
@@ -563,7 +566,7 @@ public class ColourOperations {
      * @return 颜色数量
      */
     public int getColorNum(Rect rect, String color, double sim) {
-        return (int) dmSoft.callForLong("GetColorNum", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        return (int) dmSoft.callForLong("GetColorNum", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 color, sim);
     }
 
@@ -587,7 +590,7 @@ public class ColourOperations {
      * @return 返回的是指定区域的二进制颜色数据地址, 每个颜色是4个字节, 表示方式为(00RRGGBB)
      */
     public long getScreenData(Rect rect) {
-        return dmSoft.callForLong("GetScreenData", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2());
+        return dmSoft.callForLong("GetScreenData", rect.x1(), rect.y1(), rect.x2(), rect.y2());
     }
 
     /**
@@ -600,7 +603,7 @@ public class ColourOperations {
      * @return 内存信息
      */
     public MemoryInfo getScreenDataBmp(Rect rect) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindPicSimMem", (Object[]) variants);
         if (result == 0) {
@@ -629,7 +632,7 @@ public class ColourOperations {
      * @return false-没有卡屏，图像数据在变化. true-卡屏. 图像数据在指定的时间内一直没有变化. 或者绑定的窗口不见了.
      */
     public boolean isDisplayDead(Rect rect, long seconds) {
-        long result = dmSoft.callForLong("IsDisplayDead", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), seconds);
+        long result = dmSoft.callForLong("IsDisplayDead", rect.x1(), rect.y1(), rect.x2(), rect.y2(), seconds);
         return result == 1;
     }
 

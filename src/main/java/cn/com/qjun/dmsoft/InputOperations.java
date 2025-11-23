@@ -1,7 +1,7 @@
 package cn.com.qjun.dmsoft;
 
-import cn.com.qjun.dmsoft.domain.Point;
-import cn.com.qjun.dmsoft.domain.Rect;
+import cn.com.qjun.commons.geometry.Point;
+import cn.com.qjun.commons.geometry.Rect;
 import cn.com.qjun.dmsoft.enums.KeypadMode;
 import cn.com.qjun.dmsoft.enums.MouseMode;
 import lombok.RequiredArgsConstructor;
@@ -243,7 +243,7 @@ public class InputOperations {
      * @param point 目标坐标
      */
     public void moveTo(Point point) {
-        dmSoft.callAndCheckResultEq1("MoveTo", point.getX(), point.getY());
+        dmSoft.callAndCheckResultEq1("MoveTo", point.x(), point.y());
     }
 
     /**
@@ -253,7 +253,7 @@ public class InputOperations {
      * @return 返回要移动到的目标点. 格式为x,y.  比如MoveToEx 100,100,10,10,返回值可能是101,102
      */
     public Point moveToEx(Rect rect) {
-        String result = dmSoft.callForString("MoveToEx", rect.getX1(), rect.getY1(), rect.getWidth(), rect.getHeight());
+        String result = dmSoft.callForString("MoveToEx", rect.x(), rect.y(), rect.width(), rect.height());
         String[] parts = result.split(",");
         return Point.of(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
     }

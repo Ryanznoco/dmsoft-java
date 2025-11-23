@@ -11,11 +11,11 @@ import com.sun.jna.Native;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,13 +43,13 @@ public class DmSoft implements AutoCloseable {
 
     static {
         try {
-            Path jacobDll = Files.createTempFile("jacob-1.20-x86", ".dll");
-            RuntimeUtils.copyResourceFile("/win32-x86/jacob-1.20-x86.dll", jacobDll);
+            Properties versions = RuntimeUtils.readProperties("/version.properties");
+            String jacobDllName = "jacob-" + versions.getProperty("jacob.version") + "-x86";
+            Path jacobDll = RuntimeUtils.releaseFileToTempDir("/" + jacobDllName + ".dll", jacobDllName, ".dll");
             System.setProperty(LibraryLoader.JACOB_DLL_PATH, jacobDll.toAbsolutePath().toString());
             LibraryLoader.loadJacobLibrary();
 
-            Path dmDll = Files.createTempFile("dm", ".dll");
-            RuntimeUtils.copyResourceFile("/win32-x86/dm.dll", dmDll);
+            Path dmDll = RuntimeUtils.releaseFileToTempDir("/win32-x86/dm.dll", "dm", ".dll");
             long dmReg = DmReg.INSTANCE.SetDllPathA(dmDll.toAbsolutePath().toString(), 1);
             if (dmReg != 1L) {
                 throw new RuntimeException("Load dm.dll failed.");

@@ -1,6 +1,8 @@
 package cn.com.qjun.dmsoft;
 
-import cn.com.qjun.dmsoft.domain.*;
+import cn.com.qjun.commons.geometry.Point;
+import cn.com.qjun.commons.geometry.Rect;
+import cn.com.qjun.dmsoft.model.*;
 import cn.com.qjun.dmsoft.utils.InfoParseUtils;
 import com.jacob.com.Variant;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +73,7 @@ public class OcrOperations {
      * 如果失败，返回空
      */
     public String fetchWord(Rect rect, String color, String word) {
-        return dmSoft.callForString("FetchWord", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        return dmSoft.callForString("FetchWord", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 color, word);
     }
 
@@ -90,7 +92,7 @@ public class OcrOperations {
      * @return 找到的字符串索引和对应位置，没找到返回null
      */
     public FindResult findStr(Rect rect, List<String> keywords, String colorFormat, double sim) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(String.join("|", keywords)), new Variant(colorFormat), new Variant(sim),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindStr", (Object[]) variants);
@@ -115,7 +117,7 @@ public class OcrOperations {
      * @return 返回所有找到的坐标集合
      */
     public List<FindResult> findStrEx(Rect rect, List<String> keywords, String colorFormat, double sim) {
-        String result = dmSoft.callForString("FindStrEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("FindStrEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 String.join("|", keywords), colorFormat, sim);
         return convertFindResultList(result);
     }
@@ -137,7 +139,7 @@ public class OcrOperations {
      * @return 找到的字符串索引和对应位置，没找到返回null
      */
     public FindResult findStrFast(Rect rect, List<String> keywords, String colorFormat, double sim) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(String.join("|", keywords)), new Variant(colorFormat), new Variant(sim),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindStrFast", (Object[]) variants);
@@ -164,7 +166,7 @@ public class OcrOperations {
      * @return 返回所有找到的坐标集合
      */
     public List<FindResult> findStrFastEx(Rect rect, List<String> keywords, String colorFormat, double sim) {
-        String result = dmSoft.callForString("FindStrFastEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("FindStrFastEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 String.join("|", keywords), colorFormat, sim);
         return convertFindResultList(result);
     }
@@ -186,7 +188,7 @@ public class OcrOperations {
      * @return 找到的字符串索引和对应位置，没找到返回null
      */
     public FindResult findStrWithFont(Rect rect, List<String> keywords, String colorFormat, double sim, String fontName, int fontSize, int fontFlag) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(String.join("|", keywords)), new Variant(colorFormat), new Variant(sim), new Variant(fontName), new Variant(fontSize), new Variant(fontFlag),
                 new Variant(0, true), new Variant(0, true)};
         long result = dmSoft.callForLong("FindStrWithFont", (Object[]) variants);
@@ -213,7 +215,7 @@ public class OcrOperations {
      * @return 返回所有找到的坐标集合
      */
     public List<FindResult> findStrWithFontEx(Rect rect, List<String> keywords, String colorFormat, double sim, String fontName, int fontSize, int fontFlag) {
-        String result = dmSoft.callForString("FindStrWithFontEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("FindStrWithFontEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 String.join("|", keywords), colorFormat, sim, fontName, fontSize, fontFlag);
         return convertFindResultList(result);
     }
@@ -308,7 +310,7 @@ public class OcrOperations {
      * @return 识别到的格式串, 要用到专用函数来解析
      */
     public String getWords(Rect rect, String colorFormat, double sim) {
-        return dmSoft.callForString("GetWords", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        return dmSoft.callForString("GetWords", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 colorFormat, sim);
     }
 
@@ -321,7 +323,7 @@ public class OcrOperations {
      * @return 识别到的格式串, 要用到专用函数来解析
      */
     public String getWordsNoDict(Rect rect, String colorFormat) {
-        return dmSoft.callForString("GetWordsNoDict", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), colorFormat);
+        return dmSoft.callForString("GetWordsNoDict", rect.x1(), rect.y1(), rect.x2(), rect.y2(), colorFormat);
     }
 
     /**
@@ -334,7 +336,7 @@ public class OcrOperations {
      * @return 返回识别到的字符串
      */
     public String ocr(Rect rect, String colorFormat, double sim) {
-        return dmSoft.callForString("Ocr", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        return dmSoft.callForString("Ocr", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 colorFormat, sim);
     }
 
@@ -351,7 +353,7 @@ public class OcrOperations {
      * @return 返回识别到的字符串和坐标
      */
     public List<OcrResult> ocrEx(Rect rect, String colorFormat, double sim) {
-        String result = dmSoft.callForString("OcrEx", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("OcrEx", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 colorFormat, sim);
         return convertOcrResultList(result);
     }
@@ -367,7 +369,7 @@ public class OcrOperations {
      * @return 识别到的字符串和每个字符坐标，没有识别到返回null
      */
     public OcrResultEach ocrExOne(Rect rect, String colorFormat, double sim) {
-        String result = dmSoft.callForString("OcrExOne", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        String result = dmSoft.callForString("OcrExOne", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 colorFormat, sim);
         if (result == null || result.isEmpty()) {
             return null;
@@ -390,7 +392,7 @@ public class OcrOperations {
      * @return 返回识别到的字符串
      */
     public String ocrInFile(Rect rect, String picName, String colorFormat, double sim) {
-        return dmSoft.callForString("OcrInFile", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        return dmSoft.callForString("OcrInFile", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 picName, colorFormat, sim);
     }
 

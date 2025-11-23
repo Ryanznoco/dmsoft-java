@@ -53,6 +53,14 @@ public class DmOptions {
     @Setter(AccessLevel.PRIVATE)
     private Map<Integer, String> dicts;
     
+    /**
+     * 创建配置构建器
+     *
+     * @param workDir 工作目录
+     * @param regCode 注册码
+     * @param addCode 附加码
+     * @return 配置构建器
+     */
     public static PluginOptionsBuilder builder(String workDir, String regCode, String addCode) {
         return new PluginOptionsBuilder(workDir, regCode, addCode);
     }

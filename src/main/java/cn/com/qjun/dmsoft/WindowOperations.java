@@ -1,9 +1,9 @@
 package cn.com.qjun.dmsoft;
 
-import cn.com.qjun.dmsoft.domain.Point;
-import cn.com.qjun.dmsoft.domain.ProcessInfo;
-import cn.com.qjun.dmsoft.domain.Rect;
-import cn.com.qjun.dmsoft.domain.Size;
+import cn.com.qjun.commons.geometry.Point;
+import cn.com.qjun.commons.geometry.Rect;
+import cn.com.qjun.commons.geometry.Size;
+import cn.com.qjun.dmsoft.model.ProcessInfo;
 import cn.com.qjun.dmsoft.enums.GetWindowFlag;
 import cn.com.qjun.dmsoft.enums.GetWindowStateFlag;
 import cn.com.qjun.dmsoft.enums.WindowFilter;
@@ -31,7 +31,7 @@ public class WindowOperations {
      * @return 窗口坐标对应的屏幕坐标
      */
     public Point clientToScreen(long hwnd, Point pointInWindow) {
-        int[] result = dmSoft.callForMultiInt("ClientToScreen", 2, true, hwnd, pointInWindow.getX(), pointInWindow.getY());
+        int[] result = dmSoft.callForMultiInt("ClientToScreen", 2, true, hwnd, pointInWindow.x(), pointInWindow.y());
         return Point.of(result[0], result[1]);
     }
 
@@ -218,7 +218,7 @@ public class WindowOperations {
      * @return 返回整型表示的窗口句柄
      */
     public long getPointWindow(Point point) {
-        return dmSoft.callForLong("GetPointWindow", point.getX(), point.getY());
+        return dmSoft.callForLong("GetPointWindow", point.x(), point.y());
     }
 
     /**
@@ -336,7 +336,7 @@ public class WindowOperations {
      * @param point 要移动到的坐标
      */
     public void moveWindow(long hwnd, Point point) {
-        dmSoft.callAndCheckResultEq1("MoveWindow", hwnd, point.getX(), point.getY());
+        dmSoft.callAndCheckResultEq1("MoveWindow", hwnd, point.x(), point.y());
     }
 
     /**
@@ -347,7 +347,7 @@ public class WindowOperations {
      * @return
      */
     public Point screenToClient(long hwnd, Point pointInScreen) {
-        int[] result = dmSoft.callForMultiInt("ScreenToClient", 2, true, hwnd, pointInScreen.getX(), pointInScreen.getY());
+        int[] result = dmSoft.callForMultiInt("ScreenToClient", 2, true, hwnd, pointInScreen.x(), pointInScreen.y());
         return Point.of(result[0], result[1]);
     }
 
@@ -426,7 +426,7 @@ public class WindowOperations {
      * @param size 要设置的客户区尺寸
      */
     public void setClientSize(long hwnd, Size size) {
-        dmSoft.callAndCheckResultEq1("SetClientSize", hwnd, size.getWidth(), size.getHeight());
+        dmSoft.callAndCheckResultEq1("SetClientSize", hwnd, size.width(), size.height());
     }
 
     /**
@@ -436,7 +436,7 @@ public class WindowOperations {
      * @param size 要设置的窗口尺寸
      */
     public void setWindowSize(long hwnd, Size size) {
-        dmSoft.callAndCheckResultEq1("SetWindowSize", hwnd, size.getWidth(), size.getHeight());
+        dmSoft.callAndCheckResultEq1("SetWindowSize", hwnd, size.width(), size.height());
     }
 
     /**

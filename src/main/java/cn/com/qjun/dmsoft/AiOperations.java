@@ -1,6 +1,9 @@
 package cn.com.qjun.dmsoft;
 
-import cn.com.qjun.dmsoft.domain.*;
+import cn.com.qjun.commons.geometry.Point;
+import cn.com.qjun.commons.geometry.Rect;
+import cn.com.qjun.commons.geometry.Size;
+import cn.com.qjun.dmsoft.model.*;
 import com.jacob.com.Variant;
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +35,7 @@ public class AiOperations {
      * @return 检测到的对象列表
      */
     public List<AiFindResult> aiYoloDetectObjects(Rect rect, float prob, float iou) {
-        String result = dmSoft.callForString("AiYoloDetectObjects", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), prob, iou);
+        String result = dmSoft.callForString("AiYoloDetectObjects", rect.x1(), rect.y1(), rect.x2(), rect.y2(), prob, iou);
         return convertDetectObjects(result);
     }
 
@@ -47,7 +50,7 @@ public class AiOperations {
      * @return 排序后的识别结果
      */
     public List<AiFindResult> aiYoloDetectObjectsAndSort(Rect rect, float prob, float iou, int lineHeight) {
-        String result = dmSoft.callForString("AiYoloDetectObjects", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(), prob, iou);
+        String result = dmSoft.callForString("AiYoloDetectObjects", rect.x1(), rect.y1(), rect.x2(), rect.y2(), prob, iou);
         if (result == null || result.isEmpty()) {
             return Collections.emptyList();
         }
@@ -69,7 +72,7 @@ public class AiOperations {
      * @return 图片在内存中的信息
      */
     public MemoryInfo aiYoloDetectObjectsToDataBmp(Rect rect, float prob, float iou, boolean drawProb) {
-        Variant[] variants = new Variant[]{new Variant(rect.getX1()), new Variant(rect.getY1()), new Variant(rect.getX2()), new Variant(rect.getY2()),
+        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
                 new Variant(prob), new Variant(iou), new Variant(0, true), new Variant(0, true), new Variant(drawProb ? 0 : 1)};
         long result = dmSoft.callForLong("AiYoloDetectObjectsToDataBmp", (Object[]) variants);
         if (result == 0L) {
@@ -89,7 +92,7 @@ public class AiOperations {
      * @param drawProb 绘制的文字信息里是否包含置信度
      */
     public void aiYoloDetectObjectsToFile(Rect rect, float prob, float iou, String file, boolean drawProb) {
-        dmSoft.callAndCheckResultEq1("AiYoloDetectObjectsToFile", rect.getX1(), rect.getY1(), rect.getX2(), rect.getY2(),
+        dmSoft.callAndCheckResultEq1("AiYoloDetectObjectsToFile", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
                 prob, iou, file, drawProb ? 0 : 1);
     }
 
