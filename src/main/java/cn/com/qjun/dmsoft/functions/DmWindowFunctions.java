@@ -1,16 +1,20 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
 import cn.com.qjun.commons.geometry.Point;
 import cn.com.qjun.commons.geometry.Rect;
 import cn.com.qjun.commons.geometry.Size;
-import cn.com.qjun.dmsoft.model.ProcessInfo;
 import cn.com.qjun.dmsoft.enums.GetWindowFlag;
 import cn.com.qjun.dmsoft.enums.GetWindowStateFlag;
 import cn.com.qjun.dmsoft.enums.WindowFilter;
 import cn.com.qjun.dmsoft.enums.WindowFilterFlag;
-import lombok.RequiredArgsConstructor;
+import cn.com.qjun.dmsoft.model.ProcessInfo;
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.Variant;
+import lombok.NonNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 窗口操作
@@ -19,9 +23,11 @@ import java.util.List;
  * @version v7.2405
  * @date 2024/2/11
  */
-@RequiredArgsConstructor
-public class WindowOperations {
-    private final DmSoft dmSoft;
+public class DmWindowFunctions extends AbstractDmFunctions {
+
+    public DmWindowFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 把窗口坐标转换为屏幕坐标
@@ -31,8 +37,9 @@ public class WindowOperations {
      * @return 窗口坐标对应的屏幕坐标
      */
     public Point clientToScreen(long hwnd, Point pointInWindow) {
-        int[] result = dmSoft.callForMultiInt("ClientToScreen", 2, true, hwnd, pointInWindow.x(), pointInWindow.y());
-        return Point.of(result[0], result[1]);
+        FunctionArgs args = FunctionArgs.of(hwnd, pointInWindow, new Variant(0, true), new Variant(0, true));
+        callExpect1("ClientToScreen", args);
+        return args.getPoint(-2, -1);
     }
 
     /**
@@ -42,7 +49,8 @@ public class WindowOperations {
      * @return 返回所有匹配的进程PID, 并按打开顺序排序
      */
     public List<Long> enumProcess(String name) {
-        return dmSoft.callForStringAndConvertToLongList("EnumProcess", name);
+        String result = callForString("EnumProcess", FunctionArgs.of(name));
+        return DmResultParser.parseLongList(result);
     }
 
     /**
@@ -55,7 +63,8 @@ public class WindowOperations {
      * @return 返回所有匹配的窗口句柄
      */
     public List<Long> enumWindow(long parent, String title, String className, WindowFilter... filters) {
-        return dmSoft.callForStringAndConvertToLongList("EnumWindow", parent, title, className, WindowFilter.calcValue(filters));
+        String result = callForString("EnumWindow", FunctionArgs.of(parent, title, className, WindowFilter.calcValue(filters)));
+        return DmResultParser.parseLongList(result);
     }
 
     /**
@@ -68,7 +77,8 @@ public class WindowOperations {
      * @return 返回所有匹配的窗口句柄
      */
     public List<Long> enumWindowByProcess(String processName, String title, String className, WindowFilter... filters) {
-        return dmSoft.callForStringAndConvertToLongList("EnumWindowByProcess", processName, title, className, WindowFilter.calcValue(filters));
+        String result = callForString("EnumWindowByProcess", FunctionArgs.of(processName, title, className, WindowFilter.calcValue(filters)));
+        return DmResultParser.parseLongList(result);
     }
 
     /**
@@ -81,7 +91,8 @@ public class WindowOperations {
      * @return
      */
     public List<Long> enumWindowByProcessId(long pid, String title, String className, WindowFilter... filters) {
-        return dmSoft.callForStringAndConvertToLongList("EnumWindowByProcessId", pid, title, className, WindowFilter.calcValue(filters));
+        String result = callForString("EnumWindowByProcessId", FunctionArgs.of(pid, title, className, WindowFilter.calcValue(filters)));
+        return DmResultParser.parseLongList(result);
     }
 
     /**
@@ -97,7 +108,8 @@ public class WindowOperations {
      * @return 返回所有匹配的窗口句柄
      */
     public List<Long> enumWindowSuper(String spec1, WindowFilterFlag flag1, boolean fuzzy1, String spec2, WindowFilterFlag flag2, boolean fuzzy2, boolean orderByOpenTime) {
-        return dmSoft.callForStringAndConvertToLongList("EnumWindowSuper", spec1, flag1.getValue(), fuzzy1 ? 1 : 0, spec2, flag2.getValue(), fuzzy2 ? 1 : 0, orderByOpenTime ? 1 : 0);
+        String result = callForString("EnumWindowSuper", FunctionArgs.of(spec1, flag1, fuzzy1, spec2, flag2, fuzzy2, orderByOpenTime));
+        return DmResultParser.parseLongList(result);
     }
 
     /**
@@ -108,7 +120,7 @@ public class WindowOperations {
      * @return 整形数表示的窗口句柄，没找到返回0
      */
     public long findWindow(String className, String title) {
-        return dmSoft.callForLong("FindWindow", className, title);
+        return callForLong("FindWindow", FunctionArgs.of(className, title));
     }
 
     /**
@@ -120,7 +132,7 @@ public class WindowOperations {
      * @return 整形数表示的窗口句柄，没找到返回0
      */
     public long findWindowByProcess(String processName, String className, String title) {
-        return dmSoft.callForLong("FindWindowByProcess", processName, className, title);
+        return callForLong("FindWindowByProcess", FunctionArgs.of(processName, className, title));
     }
 
     /**
@@ -132,7 +144,7 @@ public class WindowOperations {
      * @return 整形数表示的窗口句柄，没找到返回0
      */
     public long findWindowByProcessId(long processId, String className, String title) {
-        return dmSoft.callForLong("FindWindowByProcessId", processId, className, title);
+        return callForLong("FindWindowByProcessId", FunctionArgs.of(processId, className, title));
     }
 
     /**
@@ -144,7 +156,7 @@ public class WindowOperations {
      * @return 整形数表示的窗口句柄，没找到返回0
      */
     public long findWindowEx(long parent, String className, String title) {
-        return dmSoft.callForLong("FindWindowEx", parent, className, title);
+        return callForLong("FindWindowEx", FunctionArgs.of(parent, className, title));
     }
 
     /**
@@ -159,7 +171,7 @@ public class WindowOperations {
      * @return
      */
     public long findWindowSuper(String spec1, WindowFilterFlag flag1, boolean fuzzy1, String spec2, WindowFilterFlag flag2, boolean fuzzy2) {
-        return dmSoft.callForLong("FindWindowSuper", spec1, flag1.getValue(), fuzzy1 ? 1 : 0, spec2, flag2.getValue(), fuzzy2 ? 1 : 0);
+        return callForLong("FindWindowSuper", FunctionArgs.of(spec1, flag1, fuzzy1, spec2, flag2, fuzzy2));
     }
 
     /**
@@ -169,8 +181,9 @@ public class WindowOperations {
      * @return 窗口客户区
      */
     public Rect getClientRect(long hwnd) {
-        int[] result = dmSoft.callForMultiInt("GetClientRect", 4, false, hwnd);
-        return Rect.of(result[0], result[1], result[2], result[3]);
+        FunctionArgs args = FunctionArgs.of(hwnd, new Variant(0, true), new Variant(0, true), new Variant(0, true), new Variant(0, true));
+        callExpect1("GetClientRect", args);
+        return args.getRect(-4, -3, -2, -1);
     }
 
     /**
@@ -180,8 +193,9 @@ public class WindowOperations {
      * @return 窗口客户区尺寸
      */
     public Size getClientSize(long hwnd) {
-        int[] result = dmSoft.callForMultiInt("GetClientSize", 2, false, hwnd);
-        return Size.of(result[0], result[1]);
+        FunctionArgs args = FunctionArgs.of(hwnd, new Variant(0, true), new Variant(0, true));
+        callExpect1("GetClientSize", args);
+        return args.getSize(-2, -1);
     }
 
     /**
@@ -190,7 +204,7 @@ public class WindowOperations {
      * @return 返回整型表示的窗口句柄
      */
     public long getForegroundFocus() {
-        return dmSoft.callForLong("GetForegroundFocus");
+        return callForLong("GetForegroundFocus", FunctionArgs.of());
     }
 
     /**
@@ -199,7 +213,7 @@ public class WindowOperations {
      * @return 返回整型表示的窗口句柄
      */
     public long getForegroundWindow() {
-        return dmSoft.callForLong("GetForegroundWindow");
+        return callForLong("GetForegroundWindow", FunctionArgs.of());
     }
 
     /**
@@ -208,7 +222,7 @@ public class WindowOperations {
      * @return 返回整型表示的窗口句柄
      */
     public long getMousePointWindow() {
-        return dmSoft.callForLong("GetMousePointWindow");
+        return callForLong("GetMousePointWindow", FunctionArgs.of());
     }
 
     /**
@@ -218,7 +232,7 @@ public class WindowOperations {
      * @return 返回整型表示的窗口句柄
      */
     public long getPointWindow(Point point) {
-        return dmSoft.callForLong("GetPointWindow", point.x(), point.y());
+        return callForLong("GetPointWindow", FunctionArgs.of(point));
     }
 
     /**
@@ -228,9 +242,8 @@ public class WindowOperations {
      * @return 进程信息
      */
     public ProcessInfo getProcessInfo(long pid) {
-        String result = dmSoft.callForString("GetProcessInfo", pid);
-        String[] parts = result.split("\\|");
-        return new ProcessInfo(parts[0], parts[1], Integer.parseInt(parts[2]), Long.parseLong(parts[3]));
+        String result = callForString("GetProcessInfo", FunctionArgs.of(pid));
+        return DmResultParser.parseProcessInfo(result);
     }
 
     /**
@@ -242,7 +255,7 @@ public class WindowOperations {
      * @return 以整型数表示的窗口句柄
      */
     public long getSpecialWindow(int flag) {
-        return dmSoft.callForLong("GetSpecialWindow", flag);
+        return callForLong("GetSpecialWindow", FunctionArgs.of(flag));
     }
 
     /**
@@ -253,7 +266,7 @@ public class WindowOperations {
      * @return 返回整型表示的窗口句柄
      */
     public long getWindow(long hwnd, GetWindowFlag flag) {
-        return dmSoft.callForLong("GetWindow", hwnd, flag.getValue());
+        return callForLong("GetWindow", FunctionArgs.of(hwnd, flag));
     }
 
     /**
@@ -263,7 +276,7 @@ public class WindowOperations {
      * @return 窗口的类名
      */
     public String getWindowClass(long hwnd) {
-        return dmSoft.callForString("GetWindowClass", hwnd);
+        return callForString("GetWindowClass", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -273,7 +286,7 @@ public class WindowOperations {
      * @return 返回整型表示的进程ID
      */
     public long getWindowProcessId(long hwnd) {
-        return dmSoft.callForLong("GetWindowProcessId", hwnd);
+        return callForLong("GetWindowProcessId", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -283,7 +296,7 @@ public class WindowOperations {
      * @return 返回字符串表示的是exe全路径名
      */
     public String getWindowProcessPath(long hwnd) {
-        return dmSoft.callForString("GetWindowProcessPath", hwnd);
+        return callForString("GetWindowProcessPath", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -293,8 +306,9 @@ public class WindowOperations {
      * @return 窗口在屏幕上的区域
      */
     public Rect getWindowRect(long hwnd) {
-        int[] result = dmSoft.callForMultiInt("GetWindowRect", 4, false, hwnd);
-        return Rect.of(result[0], result[1], result[2], result[3]);
+        FunctionArgs args = FunctionArgs.of(hwnd, new Variant(0, true), new Variant(0, true), new Variant(0, true), new Variant(0, true));
+        callExpect1("GetWindowRect", args);
+        return args.getRect(-4, -3, -2, -1);
     }
 
     /**
@@ -305,7 +319,7 @@ public class WindowOperations {
      * @return 是否处于标识指定的状态
      */
     public boolean getWindowState(long hwnd, GetWindowStateFlag flag) {
-        long result = dmSoft.callForLong("GetWindowState", hwnd, flag.getValue());
+        long result = callForLong("GetWindowState", FunctionArgs.of(hwnd, flag));
         return result == 1;
     }
 
@@ -316,7 +330,7 @@ public class WindowOperations {
      * @return 返回整型表示的是线程ID
      */
     public long getWindowThreadId(long hwnd) {
-        return dmSoft.callForLong("GetWindowThreadId", hwnd);
+        return callForLong("GetWindowThreadId", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -326,7 +340,7 @@ public class WindowOperations {
      * @return 窗口的标题
      */
     public String getWindowTitle(long hwnd) {
-        return dmSoft.callForString("GetWindowTitle", hwnd);
+        return callForString("GetWindowTitle", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -336,7 +350,7 @@ public class WindowOperations {
      * @param point 要移动到的坐标
      */
     public void moveWindow(long hwnd, Point point) {
-        dmSoft.callAndCheckResultEq1("MoveWindow", hwnd, point.x(), point.y());
+        callExpect1("MoveWindow", FunctionArgs.of(hwnd, point));
     }
 
     /**
@@ -347,8 +361,9 @@ public class WindowOperations {
      * @return
      */
     public Point screenToClient(long hwnd, Point pointInScreen) {
-        int[] result = dmSoft.callForMultiInt("ScreenToClient", 2, true, hwnd, pointInScreen.x(), pointInScreen.y());
-        return Point.of(result[0], result[1]);
+        FunctionArgs args = FunctionArgs.of(hwnd, pointInScreen, new Variant(0, true), new Variant(0, true));
+        callExpect1("ScreenToClient", args);
+        return args.getPoint(-2, -1);
     }
 
     /**
@@ -357,7 +372,7 @@ public class WindowOperations {
      * @param hwnd 指定的窗口句柄. 如果为0,则对当前激活的窗口发送.
      */
     public void sendPaste(long hwnd) {
-        dmSoft.callAndCheckResultEq1("SendPaste", hwnd);
+        callExpect1("SendPaste", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -370,7 +385,7 @@ public class WindowOperations {
      * @param content 发送的文本数据
      */
     public void sendString(long hwnd, String content) {
-        dmSoft.callAndCheckResultEq1("SendString", hwnd, content);
+        callExpect1("SendString", FunctionArgs.of(hwnd, content));
     }
 
     /**
@@ -385,7 +400,7 @@ public class WindowOperations {
      */
     @Deprecated
     public void sendString2(long hwnd, String content) {
-        dmSoft.callAndCheckResultEq1("SendString2", hwnd, content);
+        callExpect1("SendString2", FunctionArgs.of(hwnd, content));
     }
 
     /**
@@ -394,7 +409,7 @@ public class WindowOperations {
      * @param content 发送的文本数据
      */
     public void sendStringIme(String content) {
-        dmSoft.callAndCheckResultEq1("SendStringIme", content);
+        callExpect1("SendStringIme", FunctionArgs.of(content));
     }
 
     /**
@@ -416,7 +431,7 @@ public class WindowOperations {
      *                300 : 卸载系统中的输入法. 全局只用卸载一次. 多次调用没关系.
      */
     public void sendStringIme2(long hwnd, String content, int mode) {
-        dmSoft.callAndCheckResultEq1("SendStringIme2", hwnd, content, mode);
+        callExpect1("SendStringIme2", FunctionArgs.of(hwnd, content, mode));
     }
 
     /**
@@ -426,7 +441,7 @@ public class WindowOperations {
      * @param size 要设置的客户区尺寸
      */
     public void setClientSize(long hwnd, Size size) {
-        dmSoft.callAndCheckResultEq1("SetClientSize", hwnd, size.width(), size.height());
+        callExpect1("SetClientSize", FunctionArgs.of(hwnd, size));
     }
 
     /**
@@ -436,7 +451,7 @@ public class WindowOperations {
      * @param size 要设置的窗口尺寸
      */
     public void setWindowSize(long hwnd, Size size) {
-        dmSoft.callAndCheckResultEq1("SetWindowSize", hwnd, size.width(), size.height());
+        callExpect1("SetWindowSize", FunctionArgs.of(hwnd, size));
     }
 
     /**
@@ -462,7 +477,7 @@ public class WindowOperations {
      *             15 : 使指定的窗口获取输入焦点
      */
     public void setWindowState(long hwnd, int flag) {
-        dmSoft.callAndCheckResultEq1("SetWindowState", hwnd, flag);
+        callExpect1("SetWindowState", FunctionArgs.of(hwnd, flag));
     }
 
     /**
@@ -472,7 +487,7 @@ public class WindowOperations {
      * @param title 标题
      */
     public void setWindowText(long hwnd, String title) {
-        dmSoft.callAndCheckResultEq1("SetWindowText", hwnd, title);
+        callExpect1("SetWindowText", FunctionArgs.of(hwnd, title));
     }
 
     /**
@@ -483,6 +498,6 @@ public class WindowOperations {
      * @param trans 透明度取值(0-255) 越小透明度越大 0为完全透明(不可见) 255为完全显示(不透明)
      */
     public void setWindowTransparent(long hwnd, int trans) {
-        dmSoft.callAndCheckResultEq1("SetWindowTransparent", hwnd, trans);
+        callExpect1("SetWindowTransparent", FunctionArgs.of(hwnd, trans));
     }
 }

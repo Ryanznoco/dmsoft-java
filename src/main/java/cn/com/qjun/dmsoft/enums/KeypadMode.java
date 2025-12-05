@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum KeypadMode {
+public enum KeypadMode implements DmEnum<String> {
     /**
      * 正常模式,平常我们用的前台键盘模式
      */

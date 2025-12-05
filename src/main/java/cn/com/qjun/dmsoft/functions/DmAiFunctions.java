@@ -1,16 +1,12 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
-import cn.com.qjun.commons.geometry.Point;
 import cn.com.qjun.commons.geometry.Rect;
-import cn.com.qjun.commons.geometry.Size;
-import cn.com.qjun.dmsoft.model.*;
+import cn.com.qjun.dmsoft.model.FindResult;
+import cn.com.qjun.dmsoft.model.MemoryInfo;
+import cn.com.qjun.dmsoft.utils.DirectMemoryUtils;
+import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Variant;
-import lombok.RequiredArgsConstructor;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.NonNull;
 
 /**
  * AI相关操作
@@ -18,9 +14,11 @@ import java.util.stream.Collectors;
  * @author RenQiang
  * @date 2024/2/14
  */
-@RequiredArgsConstructor
-public class AiOperations {
-    private final DmSoft dmSoft;
+public class DmAiFunctions extends AbstractDmFunctions {
+
+    public DmAiFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 需要先加载Ai模块. 在指定范围内检测对象.
@@ -34,9 +32,9 @@ public class AiOperations {
      *             可以在Yolo综合工具里进行测试.
      * @return 检测到的对象列表
      */
-    public List<AiFindResult> aiYoloDetectObjects(Rect rect, float prob, float iou) {
-        String result = dmSoft.callForString("AiYoloDetectObjects", rect.x1(), rect.y1(), rect.x2(), rect.y2(), prob, iou);
-        return convertDetectObjects(result);
+    public FindResult aiYoloDetectObjects(Rect rect, float prob, float iou) {
+        String result = callForString("AiYoloDetectObjects", FunctionArgs.of(rect, prob, iou));
+        return DmResultParser.parseFindResult(result, parts -> new FindResult.Item(parts[0], Integer.parseInt(parts[1]), Rect.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]))));
     }
 
     /**
@@ -49,13 +47,11 @@ public class AiOperations {
      * @param lineHeight 行高信息. 排序时需要使用此行高. 用于确定两个检测框是否处于同一行. 如果两个框的Y坐标相差绝对值小于此行高,认为是同一行.
      * @return 排序后的识别结果
      */
-    public List<AiFindResult> aiYoloDetectObjectsAndSort(Rect rect, float prob, float iou, int lineHeight) {
-        String result = dmSoft.callForString("AiYoloDetectObjects", rect.x1(), rect.y1(), rect.x2(), rect.y2(), prob, iou);
-        if (result == null || result.isEmpty()) {
-            return Collections.emptyList();
-        }
-        String sortedResult = dmSoft.callForString("AiYoloSortsObjects", result);
-        return convertDetectObjects(sortedResult);
+    public FindResult aiYoloDetectObjectsAndSort(Rect rect, float prob, float iou, int lineHeight) {
+        String result = callForString("AiYoloDetectObjects", FunctionArgs.of(rect, prob, iou));
+        String sortedResult = callForString("AiYoloSortsObjects", FunctionArgs.of(result, lineHeight));
+        return DmResultParser.parseFindResult(sortedResult, parts ->
+                new FindResult.Item(parts[0], Integer.parseInt(parts[1]), Rect.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]))));
     }
 
     /**
@@ -72,13 +68,9 @@ public class AiOperations {
      * @return 图片在内存中的信息
      */
     public MemoryInfo aiYoloDetectObjectsToDataBmp(Rect rect, float prob, float iou, boolean drawProb) {
-        Variant[] variants = new Variant[]{new Variant(rect.x1()), new Variant(rect.y1()), new Variant(rect.x2()), new Variant(rect.y2()),
-                new Variant(prob), new Variant(iou), new Variant(0, true), new Variant(0, true), new Variant(drawProb ? 0 : 1)};
-        long result = dmSoft.callForLong("AiYoloDetectObjectsToDataBmp", (Object[]) variants);
-        if (result == 0L) {
-            return null;
-        }
-        return new MemoryInfo(variants[6].getLong(), variants[7].getLong());
+        FunctionArgs args = FunctionArgs.of(rect, prob, iou, new Variant(0, true), new Variant(0, true), drawProb);
+        callExpect1("AiYoloDetectObjectsToDataBmp", args);
+        return args.getMemoryInfo(-3, -2);
     }
 
     /**
@@ -92,8 +84,7 @@ public class AiOperations {
      * @param drawProb 绘制的文字信息里是否包含置信度
      */
     public void aiYoloDetectObjectsToFile(Rect rect, float prob, float iou, String file, boolean drawProb) {
-        dmSoft.callAndCheckResultEq1("AiYoloDetectObjectsToFile", rect.x1(), rect.y1(), rect.x2(), rect.y2(),
-                prob, iou, file, drawProb ? 0 : 1);
+        callExpect1("AiYoloDetectObjectsToFile", FunctionArgs.of(rect, prob, iou, file, drawProb));
     }
 
     /**
@@ -104,7 +95,7 @@ public class AiOperations {
      * @param index 模型的序号. 最多支持20个. 从0开始
      */
     public void aiYoloFreeModel(int index) {
-        dmSoft.callAndCheckResultEq1("AiYoloFreeModel", index);
+        callExpect1("AiYoloFreeModel", FunctionArgs.of(index));
     }
 
     /**
@@ -118,7 +109,7 @@ public class AiOperations {
      * @param pwd   模型的密码. 仅对dmx格式有效.
      */
     public void aiYoloSetModel(int index, String file, String pwd) {
-        dmSoft.callAndCheckResultEq1("AiYoloSetModel", index, file, pwd);
+        callExpect1("AiYoloSetModel", FunctionArgs.of(index, file, pwd));
     }
 
     /**
@@ -126,12 +117,13 @@ public class AiOperations {
      * <p>
      * 注:模块内部是全局的,所以调用此接口时得确保没有其它接口去访问此模型.
      *
-     * @param index      模型的序号. 最多支持20个. 从0开始
-     * @param memoryInfo dmx模型的内存信息
-     * @param pwd        dmx模型的密码
+     * @param index     模型的序号. 最多支持20个. 从0开始
+     * @param modelData dmx模型数据
+     * @param pwd       dmx模型的密码
      */
-    public void aiYoloSetModelMemory(int index, MemoryInfo memoryInfo, String pwd) {
-        dmSoft.callAndCheckResultEq1("AiYoloSetModelMemory", index, memoryInfo.getAddress(), memoryInfo.getSize(), pwd);
+    public void aiYoloSetModelMemory(int index, byte[] modelData, String pwd) {
+        DirectMemoryUtils.loadToMemAndConsume(modelData, memoryInfo ->
+                callExpect1("AiYoloSetModelMemory", FunctionArgs.of(index, memoryInfo, pwd)));
     }
 
     /**
@@ -140,7 +132,7 @@ public class AiOperations {
      * @param ver Yolo的版本信息. 需要在加载Ai模块后,第一时间调用. 目前可选的值只有"v5-7.0"
      */
     public void aiYoloSetVersion(String ver) {
-        dmSoft.callAndCheckResultEq1("AiYoloSetVersion", ver);
+        callExpect1("AiYoloSetVersion", FunctionArgs.of(ver));
     }
 
     /**
@@ -149,7 +141,7 @@ public class AiOperations {
      * @param index 模型的序号. 最多支持20个. 从0开始
      */
     public void aiYoloUseModel(int index) {
-        dmSoft.callAndCheckResultEq1("AiYoloUseModel", index);
+        callExpect1("AiYoloUseModel", FunctionArgs.of(index));
     }
 
     /**
@@ -165,13 +157,13 @@ public class AiOperations {
      * -6 内存分配失败
      */
     public int loadAi(String file) {
-        return (int) dmSoft.callForLong("LoadAi", file);
+        return (int) callForLong("LoadAi", FunctionArgs.of(file));
     }
 
     /**
      * 从内存加载Ai模块. Ai模块从后台下载.
      *
-     * @param memoryInfo 内存信息
+     * @param modelData 模型数据
      * @return 1  表示成功
      * -1 打开文件失败
      * -2 内存初始化失败
@@ -180,21 +172,8 @@ public class AiOperations {
      * -5 Ai模块初始化失败
      * -6 内存分配失败
      */
-    public int loadAiMemory(MemoryInfo memoryInfo) {
-        return (int) dmSoft.callForLong("LoadAiMemory", memoryInfo.getAddress(), memoryInfo.getSize());
-    }
-
-    private List<AiFindResult> convertDetectObjects(String resultStr) {
-        if (resultStr == null || resultStr.isEmpty()) {
-            return Collections.emptyList();
-        }
-        String[] items = resultStr.split("\\|");
-        return Arrays.stream(items)
-                .map(item -> {
-                    String[] parts = item.split(",");
-                    return new AiFindResult(parts[0], Float.parseFloat(parts[1]),
-                            Rect.of(Point.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[3])), Size.of(Integer.parseInt(parts[4]), Integer.parseInt(parts[5]))));
-                })
-                .collect(Collectors.toList());
+    public int loadAiMemory(byte[] modelData) {
+        return DirectMemoryUtils.loadToMemAndApply(modelData, memoryInfo ->
+                (int) callForLong("LoadAiMemory", FunctionArgs.of(memoryInfo)));
     }
 }

@@ -1,12 +1,9 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
-import cn.com.qjun.dmsoft.utils.InfoParseUtils;
-import lombok.RequiredArgsConstructor;
+import com.jacob.activeX.ActiveXComponent;
+import lombok.NonNull;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 文件操作
@@ -14,9 +11,11 @@ import java.util.stream.Collectors;
  * @author RenQiang
  * @date 2024/2/14
  */
-@RequiredArgsConstructor
-public class FileOperations {
-    private final DmSoft dmSoft;
+public class DmFileFunctions extends AbstractDmFunctions {
+
+    public DmFileFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 解密指定的文件.
@@ -25,7 +24,7 @@ public class FileOperations {
      * @param pwd  密码.
      */
     public void decodeFile(String file, String pwd) {
-        dmSoft.callAndCheckResultEq1("DecodeFile", file, pwd);
+        callExpect1("DecodeFile", FunctionArgs.of(file, pwd));
     }
 
     /**
@@ -38,7 +37,7 @@ public class FileOperations {
      * @param file    ini文件名.
      */
     public void deleteIni(String section, String key, String file) {
-        dmSoft.callAndCheckResultEq1("DeleteIni", section, key, file);
+        callExpect1("DeleteIni", FunctionArgs.of(section, key, file));
     }
 
     /**
@@ -53,7 +52,7 @@ public class FileOperations {
      * @param pwd     密码.
      */
     public void deleteIniPwd(String section, String key, String file, String pwd) {
-        dmSoft.callAndCheckResultEq1("DeleteIniPwd", section, key, file, pwd);
+        callExpect1("DeleteIniPwd", FunctionArgs.of(section, key, file, pwd));
     }
 
     /**
@@ -67,7 +66,7 @@ public class FileOperations {
      * -2 : 写入文件失败
      */
     public int downloadFile(String url, String saveFile, long timeoutMills) {
-        return (int) dmSoft.callForLong("DownloadFile", url, saveFile, timeoutMills);
+        return (int) callForLong("DownloadFile", FunctionArgs.of(url, saveFile, timeoutMills));
     }
 
     /**
@@ -80,7 +79,7 @@ public class FileOperations {
      * @param pwd  密码.
      */
     public void encodeFile(String file, String pwd) {
-        dmSoft.callAndCheckResultEq1("EncodeFile", file, pwd);
+        callExpect1("EncodeFile", FunctionArgs.of(file, pwd));
     }
 
     /**
@@ -94,8 +93,8 @@ public class FileOperations {
      * @return 每个key用"|"来连接，如果没有key，则返回空字符串. 比如"aaa|bbb|ccc"
      */
     public List<String> enumIniKey(String section, String file) {
-        String result = dmSoft.callForString("EnumIniKey", section, file);
-        return InfoParseUtils.splitString(result, "\\|");
+        String result = callForString("EnumIniKey", FunctionArgs.of(section, file));
+        return DmResultParser.parseStringList(result);
     }
 
     /**
@@ -111,8 +110,8 @@ public class FileOperations {
      * @return 每个key用"|"来连接，如果没有key，则返回空字符串. 比如"aaa|bbb|ccc"
      */
     public List<String> enumIniKeyPwd(String section, String file, String pwd) {
-        String result = dmSoft.callForString("EnumIniKeyPwd", section, file, pwd);
-        return InfoParseUtils.splitString(result, "\\|");
+        String result = callForString("EnumIniKeyPwd", FunctionArgs.of(section, file, pwd));
+        return DmResultParser.parseStringList(result);
     }
 
     /**
@@ -124,8 +123,8 @@ public class FileOperations {
      * @return 每个小节名用"|"来连接，如果没有小节，则返回空字符串. 比如"aaa|bbb|ccc"
      */
     public List<String> enumIniSection(String file) {
-        String result = dmSoft.callForString("EnumIniSection", file);
-        return InfoParseUtils.splitString(result, "\\|");
+        String result = callForString("EnumIniSection", FunctionArgs.of(file));
+        return DmResultParser.parseStringList(result);
     }
 
     /**
@@ -139,8 +138,8 @@ public class FileOperations {
      * @return 每个小节名用"|"来连接，如果没有小节，则返回空字符串. 比如"aaa|bbb|ccc"
      */
     public List<String> enumIniSectionPwd(String file, String pwd) {
-        String result = dmSoft.callForString("EnumIniSectionPwd", file, pwd);
-        return InfoParseUtils.splitString(result, "\\|");
+        String result = callForString("EnumIniSectionPwd", FunctionArgs.of(file, pwd));
+        return DmResultParser.parseStringList(result);
     }
 
     /**
@@ -150,7 +149,7 @@ public class FileOperations {
      * @return 文件长度(字节数)
      */
     public long getFileLength(String file) {
-        return dmSoft.callForLong("GetFileLength", file);
+        return callForLong("GetFileLength", FunctionArgs.of(file));
     }
 
     /**
@@ -162,7 +161,7 @@ public class FileOperations {
      * @return 真实路径, 如果失败, 返回空字符串
      */
     public String getRealPath(String file) {
-        return dmSoft.callForString("GetRealPath", file);
+        return callForString("GetRealPath", FunctionArgs.of(file));
     }
 
     /**
@@ -176,7 +175,7 @@ public class FileOperations {
      * @return 字符串形式表达的读取到的内容
      */
     public String readIni(String section, String key, String file) {
-        return dmSoft.callForString("ReadIni", section, key, file);
+        return callForString("ReadIni", FunctionArgs.of(section, key, file));
     }
 
     /**
@@ -192,7 +191,7 @@ public class FileOperations {
      * @return 字符串形式表达的读取到的内容
      */
     public String readIniPwd(String section, String key, String file, String pwd) {
-        return dmSoft.callForString("ReadIniPwd", section, key, file, pwd);
+        return callForString("ReadIniPwd", FunctionArgs.of(section, key, file, pwd));
     }
 
     /**
@@ -201,7 +200,7 @@ public class FileOperations {
      * @return 选择的文件夹全路径
      */
     public String selectDirectory() {
-        return dmSoft.callForString("SelectDirectory");
+        return callForString("SelectDirectory", FunctionArgs.of());
     }
 
     /**
@@ -210,7 +209,7 @@ public class FileOperations {
      * @return 选择的文件全路径
      */
     public String selectFile() {
-        return dmSoft.callForString("SelectFile");
+        return callForString("SelectFile", FunctionArgs.of());
     }
 
     /**
@@ -220,7 +219,7 @@ public class FileOperations {
      * @param content 写入的字符串.
      */
     public void writeFile(String file, String content) {
-        dmSoft.callAndCheckResultEq1("WriteFile", file, content);
+        callExpect1("WriteFile", FunctionArgs.of(file, content));
     }
 
     /**
@@ -234,7 +233,7 @@ public class FileOperations {
      * @param file    ini文件名.
      */
     public void writeIni(String section, String key, String value, String file) {
-        dmSoft.callAndCheckResultEq1("WriteIni", section, key, value, file);
+        callExpect1("WriteIni", FunctionArgs.of(section, key, value, file));
     }
 
     /**
@@ -250,6 +249,6 @@ public class FileOperations {
      * @param pwd     密码.
      */
     public void writeIniPwd(String section, String key, String value, String file, String pwd) {
-        dmSoft.callAndCheckResultEq1("WriteIniPwd", section, key, value, file, pwd);
+        callExpect1("WriteIniPwd", FunctionArgs.of(section, key, value, file, pwd));
     }
 }

@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum FindDirection {
+public enum FindDirection implements DmEnum<Integer> {
     /**
      * 从左到右,从上到下
      */
@@ -49,5 +49,5 @@ public enum FindDirection {
      */
     B_TO_T_AND_R_TO_L(8);
 
-    private final int value;
+    private final Integer value;
 }

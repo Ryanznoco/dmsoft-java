@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum GetWindowFlag {
+public enum GetWindowFlag implements DmEnum<Integer> {
     /**
      * 获取父窗口
      */
@@ -45,5 +45,5 @@ public enum GetWindowFlag {
      */
     TOP(7);
 
-    private final int value;
+    private final Integer value;
 }

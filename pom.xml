@@ -4,7 +4,7 @@
 
     <groupId>cn.com.qjun</groupId>
     <artifactId>dmsoft-java</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>dmsoft-java</name>
@@ -63,6 +63,16 @@
             <version>${jacob.version}</version>
             <classifier>x86</classifier>
             <type>dll</type>
+        </dependency>
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>0.10.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.20.0</version>
         </dependency>
 
         <dependency>

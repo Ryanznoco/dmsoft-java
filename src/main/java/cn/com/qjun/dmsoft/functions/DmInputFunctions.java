@@ -1,10 +1,12 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
 import cn.com.qjun.commons.geometry.Point;
 import cn.com.qjun.commons.geometry.Rect;
 import cn.com.qjun.dmsoft.enums.KeypadMode;
 import cn.com.qjun.dmsoft.enums.MouseMode;
-import lombok.RequiredArgsConstructor;
+import com.jacob.activeX.ActiveXComponent;
+import com.jacob.com.Variant;
+import lombok.NonNull;
 
 /**
  * 键鼠输入相关操作
@@ -12,9 +14,11 @@ import lombok.RequiredArgsConstructor;
  * @author RenQiang
  * @date 2024/2/14
  */
-@RequiredArgsConstructor
-public class InputOperations {
-    private final DmSoft dmSoft;
+public class DmInputFunctions extends AbstractDmFunctions {
+
+    public DmInputFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 设置当前系统鼠标的精确度开关. 如果所示。 此接口仅仅对前台MoveR接口起作用.
@@ -23,8 +27,7 @@ public class InputOperations {
      * @return 设置之前的精确度开关.
      */
     public boolean enableMouseAccuracy(boolean enable) {
-        long result = dmSoft.callForLong("EnableMouseAccuracy", enable ? 1 : 0);
-        return result == 1;
+        return callForBool("EnableMouseAccuracy", FunctionArgs.of(enable));
     }
 
     /**
@@ -36,8 +39,9 @@ public class InputOperations {
      * @return 鼠标坐标
      */
     public Point getCursorPos() {
-        int[] result = dmSoft.callForMultiInt("GetCursorPos", 2, false);
-        return Point.of(result[0], result[1]);
+        FunctionArgs args = FunctionArgs.of(new Variant(0, true), new Variant(0, true));
+        callExpect1("GetCursorPos", args);
+        return args.getPoint(-2, -1);
     }
 
     /**
@@ -50,7 +54,7 @@ public class InputOperations {
      * @return 成功时，返回鼠标特征码. 失败时，返回空的串.
      */
     public String getCursorShape() {
-        return dmSoft.callForString("GetCursorShape");
+        return callForString("GetCursorShape", FunctionArgs.of());
     }
 
     /**
@@ -64,7 +68,7 @@ public class InputOperations {
      * @return 成功时，返回鼠标特征码. 失败时，返回空的串.
      */
     public String getCursorShapeEx(int type) {
-        return dmSoft.callForString("GetCursorShapeEx", type);
+        return callForString("GetCursorShapeEx", FunctionArgs.of(type));
     }
 
     /**
@@ -75,12 +79,8 @@ public class InputOperations {
      * @return 成功时，返回形如"x,y"的字符串  失败时，返回null.
      */
     public Point getCursorSpot() {
-        String result = dmSoft.callForString("GetCursorSpot");
-        if (result == null || result.isEmpty()) {
-            return null;
-        }
-        String[] parts = result.split(",");
-        return Point.of(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        String result = callForString("GetCursorSpot", FunctionArgs.of());
+        return DmResultParser.parsePoint(result);
     }
 
     /**
@@ -90,8 +90,7 @@ public class InputOperations {
      * @return true-按下 false-弹起
      */
     public boolean getKeyState(int vkCode) {
-        long result = dmSoft.callForLong("GetKeyState", vkCode);
-        return result == 1;
+        return callForBool("GetKeyState", FunctionArgs.of(vkCode));
     }
 
     /**
@@ -100,7 +99,7 @@ public class InputOperations {
      * @return 0:失败 其他值,当前系统鼠标的移动速度
      */
     public int getMouseSpeed() {
-        return (int) dmSoft.callForLong("GetMouseSpeed");
+        return (int) callForLong("GetMouseSpeed", FunctionArgs.of());
     }
 
     /**
@@ -109,7 +108,7 @@ public class InputOperations {
      * @param vkCode 虚拟按键码
      */
     public void keyDown(int vkCode) {
-        dmSoft.callAndCheckResultEq1("KeyDown", vkCode);
+        callExpect1("KeyDown", FunctionArgs.of(vkCode));
     }
 
     /**
@@ -118,7 +117,7 @@ public class InputOperations {
      * @param keyStr 字符串描述的键码. 大小写无所谓. 点这里查看具体对应关系.
      */
     public void keyDownChar(String keyStr) {
-        dmSoft.callAndCheckResultEq1("KeyDownChar", keyStr);
+        callExpect1("KeyDownChar", FunctionArgs.of(keyStr));
     }
 
     /**
@@ -127,7 +126,7 @@ public class InputOperations {
      * @param vkCode 虚拟按键码
      */
     public void keyPress(int vkCode) {
-        dmSoft.callAndCheckResultEq1("KeyPress", vkCode);
+        callExpect1("KeyPress", FunctionArgs.of(vkCode));
     }
 
     /**
@@ -136,7 +135,7 @@ public class InputOperations {
      * @param keyStr 字符串描述的键码. 大小写无所谓. 点这里查看具体对应关系.
      */
     public void keyPressChar(String keyStr) {
-        dmSoft.callAndCheckResultEq1("KeyPressChar", keyStr);
+        callExpect1("KeyPressChar", FunctionArgs.of(keyStr));
     }
 
     /**
@@ -149,7 +148,7 @@ public class InputOperations {
      * @param delayMills 每按下一个按键，需要延时多久. 单位毫秒.这个值越大，按的速度越慢。
      */
     public void keyPressStr(String keyStr, long delayMills) {
-        dmSoft.callAndCheckResultEq1("KeyPressStr", keyStr, delayMills);
+        callExpect1("KeyPressStr", FunctionArgs.of(keyStr, delayMills));
     }
 
     /**
@@ -158,7 +157,7 @@ public class InputOperations {
      * @param vkCode 虚拟按键码
      */
     public void keyUp(int vkCode) {
-        dmSoft.callAndCheckResultEq1("KeyUp", vkCode);
+        callExpect1("KeyUp", FunctionArgs.of(vkCode));
     }
 
     /**
@@ -167,56 +166,56 @@ public class InputOperations {
      * @param keyStr 字符串描述的键码. 大小写无所谓. 点这里查看具体对应关系.
      */
     public void keyUpChar(String keyStr) {
-        dmSoft.callAndCheckResultEq1("KeyUpChar", keyStr);
+        callExpect1("KeyUpChar", FunctionArgs.of(keyStr));
     }
 
     /**
      * 按下鼠标左键
      */
     public void leftClick() {
-        dmSoft.callAndCheckResultEq1("LeftClick");
+        callExpect1("LeftClick", FunctionArgs.of());
     }
 
     /**
      * 双击鼠标左键
      */
     public void leftDoubleClick() {
-        dmSoft.callAndCheckResultEq1("LeftDoubleClick");
+        callExpect1("LeftDoubleClick", FunctionArgs.of());
     }
 
     /**
      * 按住鼠标左键
      */
     public void leftDown() {
-        dmSoft.callAndCheckResultEq1("LeftDown");
+        callExpect1("LeftDown", FunctionArgs.of());
     }
 
     /**
      * 弹起鼠标左键
      */
     public void leftUp() {
-        dmSoft.callAndCheckResultEq1("LeftUp");
+        callExpect1("LeftUp", FunctionArgs.of());
     }
 
     /**
      * 按下鼠标中键
      */
     public void middleClick() {
-        dmSoft.callAndCheckResultEq1("MiddleClick");
+        callExpect1("MiddleClick", FunctionArgs.of());
     }
 
     /**
      * 按住鼠标中键
      */
     public void middleDown() {
-        dmSoft.callAndCheckResultEq1("MiddleDown");
+        callExpect1("MiddleDown", FunctionArgs.of());
     }
 
     /**
      * 弹起鼠标中键
      */
     public void middleUp() {
-        dmSoft.callAndCheckResultEq1("MiddleUp");
+        callExpect1("MiddleUp", FunctionArgs.of());
     }
 
     /**
@@ -234,7 +233,7 @@ public class InputOperations {
      * @param ry 相对于上次的Y偏移
      */
     public void moveR(int rx, int ry) {
-        dmSoft.callAndCheckResultEq1("MoveR", rx, ry);
+        callExpect1("MoveR", FunctionArgs.of(rx, ry));
     }
 
     /**
@@ -243,7 +242,7 @@ public class InputOperations {
      * @param point 目标坐标
      */
     public void moveTo(Point point) {
-        dmSoft.callAndCheckResultEq1("MoveTo", point.x(), point.y());
+        callExpect1("MoveTo", FunctionArgs.of(point));
     }
 
     /**
@@ -253,30 +252,29 @@ public class InputOperations {
      * @return 返回要移动到的目标点. 格式为x,y.  比如MoveToEx 100,100,10,10,返回值可能是101,102
      */
     public Point moveToEx(Rect rect) {
-        String result = dmSoft.callForString("MoveToEx", rect.x(), rect.y(), rect.width(), rect.height());
-        String[] parts = result.split(",");
-        return Point.of(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        String result = callForString("MoveToEx", FunctionArgs.of(rect));
+        return DmResultParser.parsePoint(result);
     }
 
     /**
      * 按下鼠标右键
      */
     public void rightClick() {
-        dmSoft.callAndCheckResultEq1("RightClick");
+        callExpect1("RightClick", FunctionArgs.of());
     }
 
     /**
      * 按住鼠标右键
      */
     public void rightDown() {
-        dmSoft.callAndCheckResultEq1("RightDown");
+        callExpect1("RightDown", FunctionArgs.of());
     }
 
     /**
      * 弹起鼠标右键
      */
     public void rightUp() {
-        dmSoft.callAndCheckResultEq1("RightUp");
+        callExpect1("RightUp", FunctionArgs.of());
     }
 
     /**
@@ -291,7 +289,7 @@ public class InputOperations {
      * @param delayMills 延时,单位是毫秒
      */
     public void setKeypadDelay(KeypadMode mode, long delayMills) {
-        dmSoft.callAndCheckResultEq1("SetKeypadDelay", mode.getValue(), delayMills);
+        callExpect1("SetKeypadDelay",FunctionArgs.of(mode, delayMills));
     }
 
     /**
@@ -306,7 +304,7 @@ public class InputOperations {
      * @param delayMills 延时,单位是毫秒
      */
     public void setMouseDelay(MouseMode mode, long delayMills) {
-        dmSoft.callAndCheckResultEq1("SetMouseDelay", mode.getValue(), delayMills);
+        callExpect1("SetMouseDelay", FunctionArgs.of(mode, delayMills));
     }
 
     /**
@@ -315,7 +313,7 @@ public class InputOperations {
      * @param speed 鼠标移动速度, 最小1，最大11.  居中为6. 推荐设置为6
      */
     public void setMouseSpeed(int speed) {
-        dmSoft.callAndCheckResultEq1("SetMouseSpeed", speed);
+        callExpect1("SetMouseSpeed", FunctionArgs.of(speed));
     }
 
     /**
@@ -344,7 +342,7 @@ public class InputOperations {
      * 1  : 成功
      */
     public int setSimMode(int mode) {
-        return (int) dmSoft.callForLong("SetSimMode", mode);
+        return (int) callForLong("SetSimMode", FunctionArgs.of(mode));
     }
 
     /**
@@ -357,7 +355,7 @@ public class InputOperations {
      * 按下的按键码:(当vk_code为0时)
      */
     public int waitKey(int vkCode, long timeoutMills) {
-        long result = dmSoft.callForLong("WaitKey", vkCode, timeoutMills);
+        long result = callForLong("WaitKey", FunctionArgs.of(vkCode, timeoutMills));
         return (int) result;
     }
 
@@ -365,13 +363,13 @@ public class InputOperations {
      * 滚轮向下滚
      */
     public void wheelDown() {
-        dmSoft.callAndCheckResultEq1("WheelDown");
+        callExpect1("WheelDown", FunctionArgs.of());
     }
 
     /**
      * 滚轮向上滚
      */
     public void wheelUp() {
-        dmSoft.callAndCheckResultEq1("WheelUp");
+        callExpect1("WheelUp", FunctionArgs.of());
     }
 }

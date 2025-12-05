@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum WindowFilterFlag {
+public enum WindowFilterFlag implements DmEnum<Integer> {
     /**
      * 标题
      */
@@ -53,5 +53,5 @@ public enum WindowFilterFlag {
      */
     TOP_CLASS_NAME(9);
 
-    private final int value;
+    private final Integer value;
 }

@@ -1,6 +1,7 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
-import lombok.RequiredArgsConstructor;
+import com.jacob.activeX.ActiveXComponent;
+import lombok.NonNull;
 
 /**
  * 其他操作（杂项）
@@ -8,9 +9,11 @@ import lombok.RequiredArgsConstructor;
  * @author RenQiang
  * @date 2024/2/14
  */
-@RequiredArgsConstructor
-public class OtherOperations {
-    private final DmSoft dmSoft;
+public class DmOtherFunctions extends AbstractDmFunctions {
+
+    public DmOtherFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 激活指定窗口所在进程的输入法.
@@ -23,7 +26,7 @@ public class OtherOperations {
      *                    以此类推.
      */
     public void activeInputMethod(long hwnd, String inputMethod) {
-        dmSoft.callAndCheckResultEq1("ActiveInputMethod", hwnd, inputMethod);
+        callExpect1("ActiveInputMethod", FunctionArgs.of(hwnd, inputMethod));
     }
 
     /**
@@ -38,7 +41,7 @@ public class OtherOperations {
      * @return 是否开启
      */
     public boolean checkInputMethod(long hwnd, String inputMethod) {
-        return dmSoft.callForLong("CheckInputMethod", hwnd, inputMethod) == 1;
+        return callForBool("CheckInputMethod", FunctionArgs.of(hwnd, inputMethod));
     }
 
     /**
@@ -50,7 +53,7 @@ public class OtherOperations {
      * @return false-不可以 true-已经进入临界区
      */
     public boolean enterCri() {
-        return dmSoft.callForLong("EnterCri") == 1;
+        return callForBool("EnterCri", FunctionArgs.of());
     }
 
     /**
@@ -62,7 +65,7 @@ public class OtherOperations {
      * @return cmd指令的执行结果.  返回空字符串表示执行失败.
      */
     public String executeCmd(String cmd, String currentDir, long timeoutMills) {
-        return dmSoft.callForString("ExecuteCmd", cmd, currentDir, timeoutMills);
+        return callForString("ExecuteCmd", FunctionArgs.of(cmd, currentDir, timeoutMills));
     }
 
     /**
@@ -76,7 +79,7 @@ public class OtherOperations {
      * @return 是否安装
      */
     public boolean findInputMethod(String inputMethod) {
-        return dmSoft.callForLong("FindInputMethod", inputMethod) == 1;
+        return callForBool("FindInputMethod", FunctionArgs.of(inputMethod));
     }
 
     /**
@@ -85,7 +88,7 @@ public class OtherOperations {
      * 关于如何前台多开,点这里.
      */
     public void initCri() {
-        dmSoft.callAndCheckResultEq1("InitCri");
+        callExpect1("InitCri", FunctionArgs.of());
     }
 
     /**
@@ -95,7 +98,7 @@ public class OtherOperations {
      * 关于如何前台多开,点这里.
      */
     public void leaveCri() {
-        dmSoft.callAndCheckResultEq1("LeaveCri");
+        callExpect1("LeaveCri", FunctionArgs.of());
     }
 
     /**
@@ -108,7 +111,7 @@ public class OtherOperations {
      * 具体的使用例子，在最新版本的类库生成工具，生成以后有相对应平台的多线程模板，里面有详细介绍.
      */
     public void releaseRef() {
-        dmSoft.callAndCheckResultEq1("ReleaseRef");
+        callExpect1("ReleaseRef", FunctionArgs.of());
     }
 
     /**
@@ -124,6 +127,6 @@ public class OtherOperations {
      * @param mode 1和2都为开启标记,0为关闭标记。 1和2的区别是,1会解绑当前对象的绑定,2不会.
      */
     public void setExitThread(int mode) {
-        dmSoft.callAndCheckResultEq1("SetExitThread", mode);
+        callExpect1("SetExitThread", FunctionArgs.of(mode));
     }
 }

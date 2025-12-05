@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DisplayMode {
+public enum DisplayMode implements DmEnum<String> {
     /**
      * 正常模式,平常我们用的前台截屏模式
      */

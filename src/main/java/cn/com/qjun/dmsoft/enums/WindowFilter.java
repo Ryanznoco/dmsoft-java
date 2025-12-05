@@ -1,6 +1,5 @@
 package cn.com.qjun.dmsoft.enums;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -11,8 +10,8 @@ import lombok.RequiredArgsConstructor;
  * @date 2024/2/11
  */
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public enum WindowFilter {
+@RequiredArgsConstructor
+public enum WindowFilter implements DmEnum<Integer> {
     /**
      * 匹配窗口标题,参数title有效
      */
@@ -53,5 +52,5 @@ public enum WindowFilter {
         return result;
     }
 
-    private final int value;
+    private final Integer value;
 }

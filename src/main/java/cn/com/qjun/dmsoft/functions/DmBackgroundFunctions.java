@@ -1,10 +1,11 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
 import cn.com.qjun.commons.geometry.Rect;
 import cn.com.qjun.dmsoft.enums.DisplayMode;
 import cn.com.qjun.dmsoft.enums.KeypadMode;
 import cn.com.qjun.dmsoft.enums.MouseMode;
-import lombok.RequiredArgsConstructor;
+import com.jacob.activeX.ActiveXComponent;
+import lombok.NonNull;
 
 /**
  * 后台设置
@@ -12,9 +13,11 @@ import lombok.RequiredArgsConstructor;
  * @author RenQiang
  * @date 2024/2/13
  */
-@RequiredArgsConstructor
-public class BackgroundOperations {
-    private final DmSoft dmSoft;
+public class DmBackgroundFunctions extends AbstractDmFunctions {
+
+    public DmBackgroundFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 绑定指定的窗口,并指定这个窗口的屏幕颜色获取方式,鼠标仿真模式,键盘仿真模式,以及模式设定,高级用户可以参考BindWindowEx更加灵活强大,
@@ -62,7 +65,7 @@ public class BackgroundOperations {
      *                鼠标指向一个可以输入文字的窗口，比如一个文本框，最好能激活这个文本框，这样可以保证绑定的成功.
      */
     public void bindWindow(long hwnd, DisplayMode display, MouseMode mouse, KeypadMode keypad, int mode) {
-        dmSoft.callAndCheckResultEq1("BindWindow", hwnd, display.getValue(), mouse.getValue(), keypad.getValue(), mode);
+        callExpect1("BindWindow", FunctionArgs.of(hwnd, display, mouse, keypad, mode));
     }
 
     /**
@@ -168,7 +171,7 @@ public class BackgroundOperations {
      *                         需要注意的是: 模式101 103在大部分窗口下绑定都没问题。但也有少数特殊的窗口，比如有很多子窗口的窗口，对于这种窗口，在绑定时，一定要把鼠标指向一个可以输入文字的窗口，比如一个文本框，最好能激活这个文本框，这样可以保证绑定的成功.
      */
     public void bindWindowEx(long hwnd, String display, String mouse, String keypad, String publicProperties, int mode) {
-        dmSoft.callAndCheckResultEq1("BindWindowEx", hwnd, display, mouse, keypad, publicProperties, mode);
+        callExpect1("BindWindowEx", FunctionArgs.of(hwnd, display, mouse, keypad, publicProperties, mode));
     }
 
     /**
@@ -182,7 +185,7 @@ public class BackgroundOperations {
      * @param rate 取值取决于type. 为0表示关闭
      */
     public void downCpu(int type, int rate) {
-        dmSoft.callAndCheckResultEq1("DownCpu", type, rate);
+        callExpect1("DownCpu", FunctionArgs.of(type, rate));
     }
 
     /**
@@ -198,7 +201,7 @@ public class BackgroundOperations {
      *               5 同0，也是全部关闭，但是这个模式下，就算窗口在前后台切换时，属性dx.public.active.message的效果也一样不会失效.
      */
     public void enableBind(int enable) {
-        dmSoft.callAndCheckResultEq1("EnableBind", enable);
+        callExpect1("EnableBind", FunctionArgs.of(enable));
     }
 
     /**
@@ -214,7 +217,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void enableFakeActive(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnableFakeActive", enable ? 1 : 0);
+        callExpect1("EnableFakeActive", FunctionArgs.of(enable));
     }
 
     /**
@@ -225,7 +228,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void enableIme(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnableIme", enable ? 1 : 0);
+        callExpect1("EnableIme", FunctionArgs.of(enable));
     }
 
     /**
@@ -236,7 +239,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void enableKeypadMsg(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnableKeypadMsg", enable ? 1 : 0);
+        callExpect1("EnableKeypadMsg", FunctionArgs.of(enable));
     }
 
     /**
@@ -247,7 +250,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void enableKeypadPatch(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnableKeypadPatch", enable ? 1 : 0);
+        callExpect1("EnableKeypadPatch", FunctionArgs.of(enable));
     }
 
     /**
@@ -261,7 +264,7 @@ public class BackgroundOperations {
      * @param timeoutMills 位是毫秒,表示同步等待的最大时间.
      */
     public void enableKeypadSync(boolean enable, long timeoutMills) {
-        dmSoft.callAndCheckResultEq1("EnableKeypadSync", enable ? 1 : 0, timeoutMills);
+        callExpect1("EnableKeypadSync", FunctionArgs.of(enable, timeoutMills));
     }
 
     /**
@@ -272,7 +275,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void enableMouseMsg(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnableMouseMsg", enable ? 1 : 0);
+        callExpect1("EnableMouseMsg", FunctionArgs.of(enable));
     }
 
     /**
@@ -286,7 +289,7 @@ public class BackgroundOperations {
      * @param timeoutMills 单位是毫秒,表示同步等待的最大时间.
      */
     public void enableMouseSync(boolean enable, long timeoutMills) {
-        dmSoft.callAndCheckResultEq1("EnableMouseSync", enable ? 1 : 0, timeoutMills);
+        callExpect1("EnableMouseSync", FunctionArgs.of(enable, timeoutMills));
     }
 
     /**
@@ -299,7 +302,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void enableRealKeypad(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnableRealKeypad", enable ? 1 : 0);
+        callExpect1("EnableRealKeypad", FunctionArgs.of(enable));
     }
 
     /**
@@ -318,7 +321,7 @@ public class BackgroundOperations {
      * @param mouseStep       表示在模拟鼠标移动轨迹时,每移动一次的距离. 这个值越大，鼠标移动越快速.
      */
     public void enableRealMouse(int enable, long mouseDelayMills, int mouseStep) {
-        dmSoft.callAndCheckResultEq1("EnableRealMouse", enable, mouseDelayMills, mouseStep);
+        callExpect1("EnableRealMouse", FunctionArgs.of(enable, mouseDelayMills, mouseStep));
     }
 
     /**
@@ -331,7 +334,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void enableSpeedDx(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnableSpeedDx", enable ? 1 : 0);
+        callExpect1("EnableSpeedDx", FunctionArgs.of(enable));
     }
 
     /**
@@ -345,16 +348,16 @@ public class BackgroundOperations {
      * @param hwnd 需要强制解除绑定的窗口句柄.
      */
     public void forceUnBindWindow(long hwnd) {
-        dmSoft.callAndCheckResultEq1("ForceUnBindWindow", hwnd);
+        callExpect1("ForceUnBindWindow", FunctionArgs.of(hwnd));
     }
 
     /**
      * 获取当前对象已经绑定的窗口句柄. 无绑定返回0
      *
-     * @return
+     * @return 窗口句柄
      */
     public long getBindWindow() {
-        return dmSoft.callForLong("GetBindWindow");
+        return callForLong("GetBindWindow", FunctionArgs.of());
     }
 
     /**
@@ -365,7 +368,7 @@ public class BackgroundOperations {
      * @return fps
      */
     public int getFps() {
-        return (int) dmSoft.callForLong("GetFps");
+        return (int) callForLong("GetFps", FunctionArgs.of());
     }
 
     /**
@@ -376,7 +379,7 @@ public class BackgroundOperations {
      * @param rate 取值范围大于0. 默认是1.0 表示不加速，也不减速. 小于1.0表示减速,大于1.0表示加速. 精度为小数点后1位. 也就是说1.5 和 1.56其实是一样的.
      */
     public void hackSpeed(double rate) {
-        dmSoft.callAndCheckResultEq1("HackSpeed", "rate");
+        callExpect1("HackSpeed", FunctionArgs.of(rate));
     }
 
     /**
@@ -386,7 +389,7 @@ public class BackgroundOperations {
      * @return false-没绑定,或者窗口不存在. true-已经绑定.
      */
     public boolean isBind(long hwnd) {
-        long result = dmSoft.callForLong("IsBind", hwnd);
+        long result = callForLong("IsBind", FunctionArgs.of(hwnd));
         return result == 1;
     }
 
@@ -398,7 +401,7 @@ public class BackgroundOperations {
      * @param lock 是否锁定
      */
     public void lockDisplay(boolean lock) {
-        dmSoft.callAndCheckResultEq1("LockDisplay", lock ? 1 : 0);
+        callExpect1("LockDisplay", FunctionArgs.of(lock));
     }
 
     /**
@@ -417,7 +420,7 @@ public class BackgroundOperations {
      *             5同3,但当您发现某些特殊按键无法锁定时,比如(回车，ESC等)，那就用这个模式吧. 但此模式会让SendString函数后台失效，或者采用和SendString类似原理发送字符串的其他3方函数失效.
      */
     public void lockInput(int lock) {
-        dmSoft.callAndCheckResultEq1("LockInput", lock);
+        callExpect1("LockInput", FunctionArgs.of(lock));
     }
 
     /**
@@ -428,7 +431,7 @@ public class BackgroundOperations {
      * @param rect 锁定的区域
      */
     public void lockMouseRect(Rect rect) {
-        dmSoft.callAndCheckResultEq1("LockMouseRect", rect.x1(), rect.y1(), rect.x2(), rect.y2());
+        callExpect1("LockMouseRect", FunctionArgs.of(rect));
     }
 
     /**
@@ -439,7 +442,7 @@ public class BackgroundOperations {
      * @param enable 是否开启
      */
     public void setAero(boolean enable) {
-        dmSoft.callAndCheckResultEq1("SetAero", enable ? 1 : 0);
+        callExpect1("SetAero", FunctionArgs.of(enable));
     }
 
     /**
@@ -451,7 +454,7 @@ public class BackgroundOperations {
      * @param mills 等待时间，单位是毫秒。 注意这里不能设置的过小，否则可能会导致截图失败,从而导致图色函数和文字识别失败.
      */
     public void setDisplayDelay(long mills) {
-        dmSoft.callAndCheckResultEq1("SetDisplayDelay", mills);
+        callExpect1("SetDisplayDelay", FunctionArgs.of(mills));
     }
 
     /**
@@ -470,7 +473,7 @@ public class BackgroundOperations {
      * @param mills 等待时间，单位是毫秒。 这个值越小,强制刷新的越频繁，相应的窗口可能会导致闪烁.
      */
     public void setDisplayRefreshDelay(long mills) {
-        dmSoft.callAndCheckResultEq1("SetDisplayRefreshDelay", mills);
+        callExpect1("SetDisplayRefreshDelay", FunctionArgs.of(mills));
     }
 
     /**
@@ -496,7 +499,7 @@ public class BackgroundOperations {
      * @param ry   两个对象绑定的窗口的左上角坐标的y偏移. 是用dm_id对应的窗口的左上角y坐标减去当前窗口左上角坐标的y坐标. 一般是0
      */
     public void setInputDm(long dmId, int rx, int ry) {
-        dmSoft.callAndCheckResultEq1("SetInputDm", dmId, rx, ry);
+        callExpect1("SetInputDm", FunctionArgs.of(dmId, rx, ry));
     }
 
     /**
@@ -507,13 +510,13 @@ public class BackgroundOperations {
      * @param hwnd 需要切换过去的窗口句柄
      */
     public void switchBindWindow(long hwnd) {
-        dmSoft.callAndCheckResultEq1("SwitchBindWindow", hwnd);
+        callExpect1("SwitchBindWindow", FunctionArgs.of(hwnd));
     }
 
     /**
      * 解除绑定窗口,并释放系统资源.一般在OnScriptExit调用
      */
     public void unBindWindow() {
-        dmSoft.callAndCheckResultEq1("UnBindWindow");
+        callExpect1("UnBindWindow", FunctionArgs.of());
     }
 }

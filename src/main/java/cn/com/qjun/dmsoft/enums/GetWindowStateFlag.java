@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum GetWindowStateFlag {
+public enum GetWindowStateFlag implements DmEnum<Integer> {
     /**
      * 判断窗口是否存在
      */
@@ -53,5 +53,5 @@ public enum GetWindowStateFlag {
      */
     IS_64BIT_PROCESS(9);
 
-    private final int value;
+    private final Integer value;
 }

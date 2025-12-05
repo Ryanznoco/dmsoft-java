@@ -1,6 +1,7 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
-import lombok.RequiredArgsConstructor;
+import com.jacob.activeX.ActiveXComponent;
+import lombok.NonNull;
 
 /**
  * 系统操作
@@ -8,9 +9,11 @@ import lombok.RequiredArgsConstructor;
  * @author RenQiang
  * @date 2024/2/14
  */
-@RequiredArgsConstructor
-public class SystemOperations {
-    private final DmSoft dmSoft;
+public class DmSystemFunctions extends AbstractDmFunctions {
+
+    public DmSystemFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 蜂鸣器.
@@ -19,7 +22,7 @@ public class SystemOperations {
      * @param mills 时长(ms).
      */
     public void beep(int f, long mills) {
-        dmSoft.callAndCheckResultEq1("Beep", f, mills);
+        callExpect1("Beep", FunctionArgs.of(f, mills));
     }
 
     /**
@@ -28,8 +31,7 @@ public class SystemOperations {
      * @return 是否开启
      */
     public boolean checkFontSmooth() {
-        long result = dmSoft.callForLong("CheckFontSmooth");
-        return result == 1;
+        return callForBool("CheckFontSmooth", FunctionArgs.of());
     }
 
     /**
@@ -40,7 +42,7 @@ public class SystemOperations {
      * @return 是否开启
      */
     public boolean checkUac() {
-        return dmSoft.callForLong("CheckUAC") == 1;
+        return callForBool("CheckUAC", FunctionArgs.of());
     }
 
     /**
@@ -51,7 +53,7 @@ public class SystemOperations {
      * @param mills 毫秒数. 必须大于0.
      */
     public void delay(long mills) {
-        dmSoft.callAndCheckResultEq1("Delay", mills);
+        callExpect1("Delay", FunctionArgs.of(mills));
     }
 
     /**
@@ -63,14 +65,14 @@ public class SystemOperations {
      * @param maxMills 最大毫秒数. 必须大于0
      */
     public void delays(long minMills, long maxMills) {
-        dmSoft.callAndCheckResultEq1("Delays", minMills, maxMills);
+        callExpect1("Delays", FunctionArgs.of(minMills, maxMills));
     }
 
     /**
      * 设置当前的电源设置，禁止关闭显示器，禁止关闭硬盘，禁止睡眠，禁止待机. 不支持XP.
      */
     public void disableCloseDisplayAndSleep() {
-        dmSoft.callAndCheckResultEq1("DisableCloseDisplayAndSleep");
+        callExpect1("DisableCloseDisplayAndSleep", FunctionArgs.of());
     }
 
     /**
@@ -79,7 +81,7 @@ public class SystemOperations {
      * 注: 关闭之后要让系统生效，必须重启系统才有效.
      */
     public void disableFontSmooth() {
-        dmSoft.callAndCheckResultEq1("DisableFontSmooth");
+        callExpect1("DisableFontSmooth", FunctionArgs.of());
     }
 
     /**
@@ -89,7 +91,7 @@ public class SystemOperations {
      * 此函数经常用在后台操作过程中. 避免被系统干扰.
      */
     public void disablePowerSave() {
-        dmSoft.callAndCheckResultEq1("DisablePowerSave");
+        callExpect1("DisablePowerSave", FunctionArgs.of());
     }
 
     /**
@@ -100,7 +102,7 @@ public class SystemOperations {
      * 此函数经常用在后台操作过程中. 避免被系统干扰.
      */
     public void disableScreenSave() {
-        dmSoft.callAndCheckResultEq1("DisableScreenSave");
+        callExpect1("DisableScreenSave", FunctionArgs.of());
     }
 
     /**
@@ -109,7 +111,7 @@ public class SystemOperations {
      * 注: 开启之后要让系统生效，必须重启系统才有效.
      */
     public void enableFontSmooth() {
-        dmSoft.callAndCheckResultEq1("EnableFontSmooth");
+        callExpect1("EnableFontSmooth", FunctionArgs.of());
     }
 
     /**
@@ -121,7 +123,7 @@ public class SystemOperations {
      *             2 : 重新启动
      */
     public void exitOs(int type) {
-        dmSoft.callAndCheckResultEq1("ExitOs", type);
+        callExpect1("ExitOs", FunctionArgs.of(type));
     }
 
     /**
@@ -130,7 +132,7 @@ public class SystemOperations {
      * @return 以字符串表示的剪贴板内容
      */
     public String getClipboard() {
-        return dmSoft.callForString("GetClipboard");
+        return callForString("GetClipboard", FunctionArgs.of());
     }
 
     /**
@@ -141,7 +143,7 @@ public class SystemOperations {
      * 2 : AMD cpu
      */
     public int getCpuType() {
-        return (int) dmSoft.callForLong("GetCpuType");
+        return (int) callForLong("GetCpuType", FunctionArgs.of());
     }
 
     /**
@@ -150,7 +152,7 @@ public class SystemOperations {
      * @return 0-100表示的百分比
      */
     public int getCpuUsage() {
-        return (int) dmSoft.callForLong("GetCpuUsage");
+        return (int) callForLong("GetCpuUsage", FunctionArgs.of());
     }
 
     /**
@@ -165,7 +167,7 @@ public class SystemOperations {
      * @return 返回路径
      */
     public String getDir(int type) {
-        return dmSoft.callForString("GetDir", type);
+        return callForString("GetDir", FunctionArgs.of(type));
     }
 
     /**
@@ -175,7 +177,7 @@ public class SystemOperations {
      * @return 字符串表达的硬盘厂商信息
      */
     public String getDiskModel(int index) {
-        return dmSoft.callForString("GetDiskModel", index);
+        return callForString("GetDiskModel", FunctionArgs.of(index));
     }
 
     /**
@@ -185,7 +187,7 @@ public class SystemOperations {
      * @return 字符串表达的修正版本信息
      */
     public String getDiskReversion(int index) {
-        return dmSoft.callForString("GetDiskReversion", index);
+        return callForString("GetDiskReversion", FunctionArgs.of(index));
     }
 
     /**
@@ -195,7 +197,7 @@ public class SystemOperations {
      * @return 字符串表达的硬盘序列号
      */
     public String getDiskSerial(int index) {
-        return dmSoft.callForString("GetDiskSerial", index);
+        return callForString("GetDiskSerial", FunctionArgs.of(index));
     }
 
     /**
@@ -204,7 +206,7 @@ public class SystemOperations {
      * @return 字符串表达的显卡描述信息. 如果有多个显卡,用"|"连接
      */
     public String getDisplayInfo() {
-        return dmSoft.callForString("GetDisplayInfo");
+        return callForString("GetDisplayInfo", FunctionArgs.of());
     }
 
     /**
@@ -213,7 +215,7 @@ public class SystemOperations {
      * @return 缩放比例是不是100%
      */
     public boolean getDpi() {
-        return dmSoft.callForLong("GetDPI") == 1;
+        return callForBool("GetDPI", FunctionArgs.of());
     }
 
     /**
@@ -222,7 +224,7 @@ public class SystemOperations {
      * @return 字符集是不是GB2312(简体中文)
      */
     public boolean getLocale() {
-        return dmSoft.callForLong("GetLocale") == 1;
+        return callForBool("GetLocale", FunctionArgs.of());
     }
 
     /**
@@ -234,7 +236,7 @@ public class SystemOperations {
      * @return 字符串表达的机器机器码
      */
     public String getMachineCode() {
-        return dmSoft.callForString("GetMachineCode");
+        return callForString("GetMachineCode", FunctionArgs.of());
     }
 
     /**
@@ -246,7 +248,7 @@ public class SystemOperations {
      * @return 字符串表达的机器机器码
      */
     public String getMachineCodeNoMac() {
-        return dmSoft.callForString("GetMachineCodeNoMac");
+        return callForString("GetMachineCodeNoMac", FunctionArgs.of());
     }
 
     /**
@@ -255,7 +257,7 @@ public class SystemOperations {
      * @return 0-100表示的百分比
      */
     public int getMemoryUsage() {
-        return (int) dmSoft.callForLong("GetMemoryUsage");
+        return (int) callForLong("GetMemoryUsage", FunctionArgs.of());
     }
 
     /**
@@ -266,7 +268,7 @@ public class SystemOperations {
      * @return 时间格式. 和now返回一致. 比如"2001-11-01 23:14:08"
      */
     public String getNetTime() {
-        return dmSoft.callForString("GetNetTime");
+        return callForString("GetNetTime", FunctionArgs.of());
     }
 
     /**
@@ -279,7 +281,7 @@ public class SystemOperations {
      * @return 时间格式. 和now返回一致. 比如"2001-11-01 23:14:08"
      */
     public String getNetTimeByIp(String ip) {
-        return dmSoft.callForString("GetNetTimeByIp", ip);
+        return callForString("GetNetTimeByIp", FunctionArgs.of(ip));
     }
 
     /**
@@ -291,7 +293,7 @@ public class SystemOperations {
      * 失败返回0
      */
     public int getOsBuildNumber() {
-        return (int) dmSoft.callForLong("GetOsBuildNumber");
+        return (int) callForLong("GetOsBuildNumber", FunctionArgs.of());
     }
 
     /**
@@ -307,7 +309,7 @@ public class SystemOperations {
      * 7 : win10/2016 TP/win11
      */
     public int getOsType() {
-        return (int) dmSoft.callForLong("GetOsType");
+        return (int) callForLong("GetOsType", FunctionArgs.of());
     }
 
     /**
@@ -316,7 +318,7 @@ public class SystemOperations {
      * @return 返回系统颜色深度.(16或者32等)
      */
     public int getScreenDepth() {
-        return (int) dmSoft.callForLong("GetScreenDepth");
+        return (int) callForLong("GetScreenDepth", FunctionArgs.of());
     }
 
     /**
@@ -325,7 +327,7 @@ public class SystemOperations {
      * @return 返回屏幕的高度
      */
     public int getScreenHeight() {
-        return (int) dmSoft.callForLong("GetScreenHeight");
+        return (int) callForLong("GetScreenHeight", FunctionArgs.of());
     }
 
     /**
@@ -334,7 +336,7 @@ public class SystemOperations {
      * @return 返回屏幕的宽度
      */
     public int getScreenWidth() {
-        return (int) dmSoft.callForLong("GetScreenWidth");
+        return (int) callForLong("GetScreenWidth", FunctionArgs.of());
     }
 
     /**
@@ -367,7 +369,7 @@ public class SystemOperations {
      * @return 字符串表达的系统信息.
      */
     public String getSystemInfo(String type, int method) {
-        return dmSoft.callForString("GetSystemInfo", type, method);
+        return callForString("GetSystemInfo", FunctionArgs.of(type, method));
     }
 
     /**
@@ -376,7 +378,7 @@ public class SystemOperations {
      * @return 时间(单位毫秒)
      */
     public long getTime() {
-        return dmSoft.callForLong("GetTime");
+        return callForLong("GetTime", FunctionArgs.of());
     }
 
     /**
@@ -385,7 +387,7 @@ public class SystemOperations {
      * @return 是否是64为操作系统
      */
     public boolean is64Bit() {
-        return dmSoft.callForLong("Is64Bit") == 1;
+        return callForBool("Is64Bit", FunctionArgs.of());
     }
 
     /**
@@ -394,7 +396,7 @@ public class SystemOperations {
      * @return false-当前cpu不是intel的cpu,或者当前cpu不支持vt,或者bios中没打开vt. true-支持
      */
     public boolean isSupportVt() {
-        return dmSoft.callForLong("IsSurrpotVt") == 1;
+        return callForBool("IsSurrpotVt", FunctionArgs.of());
     }
 
     /**
@@ -405,7 +407,7 @@ public class SystemOperations {
      * 非0表示当前播放的ID。可以用Stop来控制播放结束.
      */
     public int play(String mediaFile) {
-        return (int) dmSoft.callForLong("Play", mediaFile);
+        return (int) callForLong("Play", FunctionArgs.of(mediaFile));
     }
 
     /**
@@ -417,7 +419,7 @@ public class SystemOperations {
      *                1 : 加强模式
      */
     public void runApp(String appPath, int mode) {
-        dmSoft.callAndCheckResultEq1("RunApp", appPath, mode);
+        callExpect1("RunApp", FunctionArgs.of(appPath, mode));
     }
 
     /**
@@ -426,7 +428,7 @@ public class SystemOperations {
      * @param value 以字符串表示的剪贴板内容
      */
     public void setClipboard(String value) {
-        dmSoft.callAndCheckResultEq1("SetClipboard", value);
+        callExpect1("SetClipboard", FunctionArgs.of(value));
     }
 
     /**
@@ -437,14 +439,14 @@ public class SystemOperations {
      * @param level 取值范围为0-5.  0表示关闭硬件加速。5表示完全打开硬件加速.
      */
     public void setDisplayAcceler(int level) {
-        dmSoft.callAndCheckResultEq1("SetDisplayAcceler", level);
+        callExpect1("SetDisplayAcceler", FunctionArgs.of(level));
     }
 
     /**
      * 设置当前系统的非UNICOD字符集. 会弹出一个字符集选择列表,用户自己选择到简体中文即可.
      */
     public void setLocale() {
-        dmSoft.callAndCheckResultEq1("SetLocale");
+        callExpect1("SetLocale", FunctionArgs.of());
     }
 
     /**
@@ -455,7 +457,7 @@ public class SystemOperations {
      * @param depth  系统色深
      */
     public void setScreen(int width, int height, int depth) {
-        dmSoft.callAndCheckResultEq1("SetScreen", width, height, depth);
+        callExpect1("SetScreen", FunctionArgs.of(width, height, depth));
     }
 
     /**
@@ -467,7 +469,7 @@ public class SystemOperations {
      * @param enable 是否开启
      */
     public void setUac(boolean enable) {
-        dmSoft.callAndCheckResultEq1("SetUAC", enable ? 1 : 0);
+        callExpect1("SetUAC", FunctionArgs.of(enable));
     }
 
     /**
@@ -477,7 +479,7 @@ public class SystemOperations {
      * @param show 0为隐藏,1为显示
      */
     public void showTaskBarIcon(long hwnd, boolean show) {
-        dmSoft.callAndCheckResultEq1("ShowTaskBarIcon", hwnd, show ? 1 : 0);
+        callExpect1("ShowTaskBarIcon", FunctionArgs.of(hwnd, show));
     }
 
     /**
@@ -486,6 +488,6 @@ public class SystemOperations {
      * @param id Play返回的播放id.
      */
     public void stop(int id) {
-        dmSoft.callAndCheckResultEq1("Stop", id);
+        callExpect1("Stop", FunctionArgs.of(id));
     }
 }

@@ -1,6 +1,7 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
-import lombok.RequiredArgsConstructor;
+import com.jacob.activeX.ActiveXComponent;
+import lombok.NonNull;
 
 /**
  * 内存相关操作
@@ -8,9 +9,11 @@ import lombok.RequiredArgsConstructor;
  * @author RenQiang
  * @date 2024/2/14
  */
-@RequiredArgsConstructor
-public class MemoryOperations {
-    private final DmSoft dmSoft;
+public class DmMemoryFunctions extends AbstractDmFunctions {
+
+    public DmMemoryFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 把双精度浮点数转换成二进制形式.
@@ -19,7 +22,7 @@ public class MemoryOperations {
      * @return 字符串形式表达的二进制数据. 可以用于WriteData FindData FindDataEx等接口.
      */
     public String doubleToData(double value) {
-        return dmSoft.callForString("DoubleToData", value);
+        return callForString("DoubleToData", FunctionArgs.of(value));
     }
 
     /**
@@ -39,7 +42,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findData(long hwnd, String addressRange, String data) {
-        return dmSoft.callForString("FindData", hwnd, addressRange, data);
+        return callForString("FindData", FunctionArgs.of(hwnd, addressRange, data));
     }
 
     /**
@@ -63,7 +66,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findDataEx(long hwnd, String addressRange, String data, int step, boolean multiThread, boolean fastScan) {
-        return dmSoft.callForString("FindDataEx", hwnd, addressRange, data, step, multiThread ? 1 : 0, fastScan ? 1 : 0);
+        return callForString("FindDataEx", FunctionArgs.of(hwnd, addressRange, data, step, multiThread, fastScan));
     }
 
     /**
@@ -84,7 +87,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findDouble(long hwnd, String addressRange, double minValue, double maxValue) {
-        return dmSoft.callForString("FindDouble", hwnd, addressRange, minValue, maxValue);
+        return callForString("FindDouble", FunctionArgs.of(hwnd, addressRange, minValue, maxValue));
     }
 
     /**
@@ -109,7 +112,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findDoubleEx(long hwnd, String addressRange, double minValue, double maxValue, int step, boolean multiThread, boolean fastScan) {
-        return dmSoft.callForString("FindDoubleEx", hwnd, addressRange, minValue, maxValue, step, multiThread ? 1 : 0, fastScan ? 1 : 0);
+        return callForString("FindDoubleEx", FunctionArgs.of(hwnd, addressRange, minValue, maxValue, step, multiThread, fastScan));
     }
 
     /**
@@ -130,7 +133,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findFloat(long hwnd, String addressRange, float minValue, float maxValue) {
-        return dmSoft.callForString("FindFloat", hwnd, addressRange, minValue, maxValue);
+        return callForString("FindFloat", FunctionArgs.of(hwnd, addressRange, minValue, maxValue));
     }
 
     /**
@@ -155,7 +158,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findFloatEx(long hwnd, String addressRange, float minValue, float maxValue, int step, boolean multiThread, boolean fastScan) {
-        return dmSoft.callForString("FindFloatEx", hwnd, addressRange, minValue, maxValue, step, multiThread ? 1 : 0, fastScan ? 1 : 0);
+        return callForString("FindFloatEx", FunctionArgs.of(hwnd, addressRange, minValue, maxValue, step, multiThread, fastScan));
     }
 
     /**
@@ -181,7 +184,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findInt(long hwnd, String addressRange, long minValue, long maxValue, int type) {
-        return dmSoft.callForString("FindInt", hwnd, addressRange, minValue, maxValue, type);
+        return callForString("FindInt", FunctionArgs.of(hwnd, addressRange, minValue, maxValue, type));
     }
 
     /**
@@ -211,7 +214,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findIntEx(long hwnd, String addressRange, long minValue, long maxValue, int type, int step, boolean multiThread, boolean fastScan) {
-        return dmSoft.callForString("FindIntEx", hwnd, addressRange, minValue, maxValue, type, step, multiThread ? 1 : 0, fastScan ? 1 : 0);
+        return callForString("FindIntEx", FunctionArgs.of(hwnd, addressRange, minValue, maxValue, type, step, multiThread, fastScan));
     }
 
     /**
@@ -234,7 +237,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findString(long hwnd, String addressRange, String value, int type) {
-        return dmSoft.callForString("FindString", hwnd, addressRange, value, type);
+        return callForString("FindString", FunctionArgs.of(hwnd, addressRange, value, type));
     }
 
     /**
@@ -261,7 +264,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String findStringEx(long hwnd, String addressRange, String value, int type, int step, boolean multiThread, boolean fastScan) {
-        return dmSoft.callForString("FindStringEx", hwnd, addressRange, value, type, step, multiThread ? 1 : 0, fastScan ? 1 : 0);
+        return callForString("FindStringEx", FunctionArgs.of(hwnd, addressRange, value, type, step, multiThread, fastScan));
     }
 
     /**
@@ -271,7 +274,7 @@ public class MemoryOperations {
      * @return 字符串形式表达的二进制数据. 可以用于WriteData FindData FindDataEx等接口.
      */
     public String floatToData(float value) {
-        return dmSoft.callForString("FloatToData", value);
+        return callForString("FloatToData", FunctionArgs.of(value));
     }
 
     /**
@@ -280,7 +283,7 @@ public class MemoryOperations {
      * @param hwnd 窗口句柄或者进程ID.  默认是窗口句柄. 如果要指定为进程ID,需要调用SetMemoryHwndAsProcessId.
      */
     public void freeProcessMemory(long hwnd) {
-        dmSoft.callAndCheckResultEq1("FreeProcessMemory", hwnd);
+        callExpect1("FreeProcessMemory", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -290,7 +293,7 @@ public class MemoryOperations {
      * @return 读取到的启动命令行
      */
     public String getCommandLine(long hwnd) {
-        return dmSoft.callForString("GetCommandLine", hwnd);
+        return callForString("GetCommandLine", FunctionArgs.of(hwnd));
     }
 
     /**
@@ -303,7 +306,7 @@ public class MemoryOperations {
      * @return 模块的基址
      */
     public long getModuleBaseAddr(long hwnd, String module) {
-        return dmSoft.callForLong("GetModuleBaseAddr", hwnd, module);
+        return callForLong("GetModuleBaseAddr", FunctionArgs.of(hwnd, module));
     }
 
     /**
@@ -316,7 +319,7 @@ public class MemoryOperations {
      * @return 模块的大小
      */
     public long getModuleSize(long hwnd, String module) {
-        return dmSoft.callForLong("GetModuleSize", hwnd, module);
+        return callForLong("GetModuleSize", FunctionArgs.of(hwnd, module));
     }
 
     /**
@@ -328,7 +331,7 @@ public class MemoryOperations {
      * @return 获取的地址. 如果失败返回0
      */
     public long getRemoteApiAddress(long hwnd, long baseAddress, String funName) {
-        return dmSoft.callForLong("GetRemoteApiAddress", hwnd, baseAddress, funName);
+        return callForLong("GetRemoteApiAddress", FunctionArgs.of(hwnd, baseAddress, funName));
     }
 
     /**
@@ -343,7 +346,7 @@ public class MemoryOperations {
      * @return 字符串形式表达的二进制数据. 可以用于WriteData FindData FindDataEx等接口.
      */
     public String intToData(long value, int type) {
-        return dmSoft.callForString("IntToData", value, type);
+        return callForString("IntToData", FunctionArgs.of(value, type));
     }
 
     /**
@@ -353,7 +356,7 @@ public class MemoryOperations {
      * @return 进程句柄, 可用于进程相关操作(读写操作等),记得操作完成以后，自己调用CloseHandle关闭句柄.
      */
     public long openProcess(long pid) {
-        return dmSoft.callForLong("OpenProcess", pid);
+        return callForLong("OpenProcess", FunctionArgs.of(pid));
     }
 
     /**
@@ -377,7 +380,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String readData(long hwnd, String address, int length) {
-        return dmSoft.callForString("ReadData", hwnd, address, length);
+        return callForString("ReadData", FunctionArgs.of(hwnd, address, length));
     }
 
     /**
@@ -393,7 +396,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String readDataAddr(long hwnd, long address, int length) {
-        return dmSoft.callForString("ReadDataAddr", hwnd, address, length);
+        return callForString("ReadDataAddr", FunctionArgs.of(hwnd, address, length));
     }
 
     /**
@@ -410,7 +413,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public long readDataAddrToBin(long hwnd, long addr, int len) {
-        return dmSoft.callForLong("ReadDataAddrToBin", hwnd, addr, len);
+        return callForLong("ReadDataAddrToBin", FunctionArgs.of(hwnd, addr, len));
     }
 
     /**
@@ -435,7 +438,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public long readDataToBin(long hwnd, String addr, int len) {
-        return dmSoft.callForLong("ReadDataToBin", hwnd, addr, len);
+        return callForLong("ReadDataToBin", FunctionArgs.of(hwnd, addr, len));
     }
 
     /**
@@ -457,7 +460,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public double readDouble(long hwnd, String addr) {
-        return dmSoft.callForDouble("ReadDouble", hwnd, addr);
+        return callForDouble("ReadDouble", FunctionArgs.of(hwnd, addr));
     }
 
     /**
@@ -471,7 +474,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public double readDoubleAddr(long hwnd, long addr) {
-        return dmSoft.callForDouble("ReadDoubleAddr", hwnd, addr);
+        return callForDouble("ReadDoubleAddr", FunctionArgs.of(hwnd, addr));
     }
 
     /**
@@ -493,7 +496,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public float readFloat(long hwnd, String addr) {
-        return dmSoft.callForFloat("ReadFloat", hwnd, addr);
+        return callForFloat("ReadFloat", FunctionArgs.of(hwnd, addr));
     }
 
     /**
@@ -507,7 +510,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public float readFloatAddr(long hwnd, long addr) {
-        return dmSoft.callForFloat("ReadFloatAddr", hwnd, addr);
+        return callForFloat("ReadFloatAddr", FunctionArgs.of(hwnd, addr));
     }
 
     /**
@@ -537,7 +540,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public long readInt(long hwnd, String addr, int type) {
-        return dmSoft.callForLong("ReadInt", hwnd, addr, type);
+        return callForLong("ReadInt", FunctionArgs.of(hwnd, addr, type));
     }
 
     /**
@@ -567,7 +570,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public long readIntAddr(long hwnd, long addr, int type) {
-        return dmSoft.callForLong("ReadIntAddr", hwnd, addr, type);
+        return callForLong("ReadIntAddr", FunctionArgs.of(hwnd, addr, type));
     }
 
     /**
@@ -594,7 +597,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String readString(long hwnd, String addr, int type, int len) {
-        return dmSoft.callForString("ReadString", hwnd, addr, type, len);
+        return callForString("ReadString", FunctionArgs.of(hwnd, addr, type, len));
     }
 
     /**
@@ -613,7 +616,7 @@ public class MemoryOperations {
      * 如果要想知道函数是否执行成功，请查看GetLastError函数.
      */
     public String readStringAddr(long hwnd, long addr, int type, int len) {
-        return dmSoft.callForString("ReadStringAddr", hwnd, addr, type, len);
+        return callForString("ReadStringAddr", FunctionArgs.of(hwnd, addr, type, len));
     }
 
     /**
@@ -625,7 +628,7 @@ public class MemoryOperations {
      * @param file 设置要保存的搜索结果文件名. 如果为空字符串表示取消此功能
      */
     public void setMemoryFindResultToFile(String file) {
-        dmSoft.callAndCheckResultEq1("SetMemoryFindResultToFile", file);
+        callExpect1("SetMemoryFindResultToFile", FunctionArgs.of(file));
     }
 
     /**
@@ -635,7 +638,7 @@ public class MemoryOperations {
      *               0 : 关闭  1 : 开启
      */
     public void setMemoryHwndAsProcessId(boolean enable) {
-        dmSoft.callAndCheckResultEq1("SetMemoryHwndAsProcessId", enable ? 1 : 0);
+        callExpect1("SetMemoryHwndAsProcessId", FunctionArgs.of(enable));
     }
 
     /**
@@ -648,7 +651,7 @@ public class MemoryOperations {
      * @return 字符串形式表达的二进制数据. 可以用于WriteData FindData FindDataEx等接口.
      */
     public String stringToData(String value, int type) {
-        return dmSoft.callForString("StringToData", value, type);
+        return callForString("StringToData", FunctionArgs.of(value, type));
     }
 
     /**
@@ -659,7 +662,7 @@ public class MemoryOperations {
      * @param pid 进程ID.
      */
     public void terminateProcess(long pid) {
-        dmSoft.callAndCheckResultEq1("TerminateProcess", pid);
+        callExpect1("TerminateProcess", FunctionArgs.of(pid));
     }
 
     /**
@@ -670,7 +673,7 @@ public class MemoryOperations {
      * @param pid 进程ID.
      */
     public void terminateProcessTree(long pid) {
-        dmSoft.callAndCheckResultEq1("TerminateProcessTree", pid);
+        callExpect1("TerminateProcessTree", FunctionArgs.of(pid));
     }
 
     /**
@@ -689,7 +692,7 @@ public class MemoryOperations {
      * @return 分配的内存地址，如果是0表示分配失败.
      */
     public long virtualAllocEx(long hwnd, long addr, int size, int type) {
-        return dmSoft.callForLong("VirtualAllocEx", hwnd, addr, size, type);
+        return callForLong("VirtualAllocEx", FunctionArgs.of(hwnd, addr, size, type));
     }
 
     /**
@@ -702,7 +705,7 @@ public class MemoryOperations {
      * @param addr VirtualAllocEx返回的地址
      */
     public void virtualFreeEx(long hwnd, long addr) {
-        dmSoft.callAndCheckResultEq1("VirtualFreeEx", hwnd, addr);
+        callExpect1("VirtualFreeEx", FunctionArgs.of(hwnd, addr));
     }
 
     /**
@@ -721,7 +724,7 @@ public class MemoryOperations {
      * 1 : 修改之前的读写属性
      */
     public int virtualProtectEx(long hwnd, long addr, int size, int type, int oldProtect) {
-        return (int) dmSoft.callForLong("VirtualProtectEx", hwnd, addr, size, type, oldProtect);
+        return (int) callForLong("VirtualProtectEx", FunctionArgs.of(hwnd, addr, size, type, oldProtect));
     }
 
     /**
@@ -758,7 +761,7 @@ public class MemoryOperations {
      * 数值都是10进制表达.
      */
     public String virtualQueryEx(long hwnd, long addr, int pmbi) {
-        return dmSoft.callForString("VirtualQueryEx", hwnd, addr, pmbi);
+        return callForString("VirtualQueryEx", FunctionArgs.of(hwnd, addr, pmbi));
     }
 
     /**
@@ -779,7 +782,7 @@ public class MemoryOperations {
      * @param data 二进制数据，以字符串形式描述，比如"12 34 56 78 90 ab cd"
      */
     public void writeData(long hwnd, String addr, String data) {
-        dmSoft.callAndCheckResultEq1("WriteData", hwnd, addr, data);
+        callExpect1("WriteData", FunctionArgs.of(hwnd, addr, data));
     }
 
     /**
@@ -792,7 +795,7 @@ public class MemoryOperations {
      * @param data 二进制数据，以字符串形式描述，比如"12 34 56 78 90 ab cd"
      */
     public void writeDataAddr(long hwnd, long addr, String data) {
-        dmSoft.callAndCheckResultEq1("WriteDataAddr", hwnd, addr, data);
+        callExpect1("WriteDataAddr", FunctionArgs.of(hwnd, addr, data));
     }
 
     /**
@@ -806,7 +809,7 @@ public class MemoryOperations {
      * @param len  数据长度
      */
     public void writeDataAddrFromBin(long hwnd, long addr, long data, int len) {
-        dmSoft.callAndCheckResultEq1("WriteDataAddrFromBin", hwnd, addr, data, len);
+        callExpect1("WriteDataAddrFromBin", FunctionArgs.of(hwnd, addr, data, len));
     }
 
     /**
@@ -826,7 +829,7 @@ public class MemoryOperations {
      * @param len  数据长度
      */
     public void writeDataFromBin(long hwnd, String addr, long data, int len) {
-        dmSoft.callAndCheckResultEq1("WriteDataFromBin", hwnd, addr, data, len);
+        callExpect1("WriteDataFromBin", FunctionArgs.of(hwnd, addr, data, len));
     }
 
     /**
@@ -847,7 +850,7 @@ public class MemoryOperations {
      * @param value 双精度浮点数
      */
     public void writeDouble(long hwnd, String addr, double value) {
-        dmSoft.callAndCheckResultEq1("WriteDouble", hwnd, addr, value);
+        callExpect1("WriteDouble", FunctionArgs.of(hwnd, addr, value));
     }
 
     /**
@@ -860,7 +863,7 @@ public class MemoryOperations {
      * @param value 双精度浮点数
      */
     public void writeDoubleAddr(long hwnd, long addr, double value) {
-        dmSoft.callAndCheckResultEq1("WriteDoubleAddr", hwnd, addr, value);
+        callExpect1("WriteDoubleAddr", FunctionArgs.of(hwnd, addr, value));
     }
 
     /**
@@ -881,7 +884,7 @@ public class MemoryOperations {
      * @param value 单精度浮点数
      */
     public void writeFloat(long hwnd, String addr, float value) {
-        dmSoft.callAndCheckResultEq1("WriteFloat", hwnd, addr, value);
+        callExpect1("WriteFloat", FunctionArgs.of(hwnd, addr, value));
     }
 
     /**
@@ -894,7 +897,7 @@ public class MemoryOperations {
      * @param value 单精度浮点数
      */
     public void writeFloatAddr(long hwnd, long addr, float value) {
-        dmSoft.callAndCheckResultEq1("WriteFloatAddr", hwnd, addr, value);
+        callExpect1("WriteFloatAddr", FunctionArgs.of(hwnd, addr, value));
     }
 
     /**
@@ -920,7 +923,7 @@ public class MemoryOperations {
      * @param value 整形数值
      */
     public void writeInt(long hwnd, String addr, int type, int value) {
-        dmSoft.callAndCheckResultEq1("WriteInt", hwnd, addr, type, value);
+        callExpect1("WriteInt", FunctionArgs.of(hwnd, addr, type, value));
     }
 
     /**
@@ -938,7 +941,7 @@ public class MemoryOperations {
      * @param value 整形数值
      */
     public void writeIntAddr(long hwnd, long addr, int type, int value) {
-        dmSoft.callAndCheckResultEq1("WriteIntAddr", hwnd, addr, type, value);
+        callExpect1("WriteIntAddr", FunctionArgs.of(hwnd, addr, type, value));
     }
 
     /**
@@ -963,7 +966,7 @@ public class MemoryOperations {
      * @param value 字符串
      */
     public void writeString(long hwnd, String addr, int type, String value) {
-        dmSoft.callAndCheckResultEq1("WriteString", hwnd, addr, type, value);
+        callExpect1("WriteString", FunctionArgs.of(hwnd, addr, type, value));
     }
 
     /**
@@ -980,8 +983,6 @@ public class MemoryOperations {
      * @param value 字符串
      */
     public void writeStringAddr(long hwnd, long addr, int type, String value) {
-        dmSoft.callAndCheckResultEq1("WriteStringAddr", hwnd, addr, type, value);
+        callExpect1("WriteStringAddr", FunctionArgs.of(hwnd, addr, type, value));
     }
-
-
 }

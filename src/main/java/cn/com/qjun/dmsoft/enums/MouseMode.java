@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum MouseMode {
+public enum MouseMode implements DmEnum<String> {
     /**
      * 正常模式,平常我们用的前台鼠标模式
      */

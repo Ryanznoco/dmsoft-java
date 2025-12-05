@@ -38,18 +38,20 @@ mvn clean install
 ### 基本使用
 
 ```java
-import cn.com.qjun.dmsoft.DmSoft;
-import cn.com.qjun.dmsoft.DmOptions;
+
 
 // 创建配置
 DmOptions options = DmOptions.builder("工作目录", "注册码", "附加码")
-    .build();
+        .build();
 
 // 使用 try-with-resources 自动管理资源
-try (DmSoft dmSoft = new DmSoft(options)) {
-    // 获取插件版本
-    String version = dmSoft.opsForBasic().ver();
-    System.out.println("大漠插件版本: " + version);
+try(
+        DmSoft dmSoft = new DmSoft(options)){
+        // 获取插件版本
+        String version = dmSoft.opsForBasic().ver();
+    System.out.
+
+        println("大漠插件版本: "+version);
 }
 ```
 

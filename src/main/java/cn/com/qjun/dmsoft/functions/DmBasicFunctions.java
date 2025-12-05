@@ -1,16 +1,16 @@
-package cn.com.qjun.dmsoft;
+package cn.com.qjun.dmsoft.functions;
 
-import lombok.RequiredArgsConstructor;
+import com.jacob.activeX.ActiveXComponent;
+import lombok.NonNull;
 
 /**
- * 基本设置
- *
- * @author RenQiang
- * @date 2024/2/11
+ * @author 81062
+ * @date 2025/12/5
  */
-@RequiredArgsConstructor
-public class BasicOperations {
-    private final DmSoft dmSoft;
+public class DmBasicFunctions extends AbstractDmFunctions {
+    public DmBasicFunctions(@NonNull ActiveXComponent dmSoft) {
+        super(dmSoft);
+    }
 
     /**
      * 设置是否开启或者关闭插件内部的图片缓存机制. (默认是打开).
@@ -18,14 +18,14 @@ public class BasicOperations {
      * @param enable 是否打开
      */
     public void enablePicCache(boolean enable) {
-        dmSoft.callAndCheckResultEq1("EnablePicCache", enable ? 1 : 0);
+        callExpect1("EnablePicCache", FunctionArgs.of(enable ? 1 : 0));
     }
 
     /**
      * 获取注册在系统中的dm.dll的路径.
      */
     public void getBasePath() {
-        dmSoft.callAndCheckResultEq1("GetBasePath");
+        callExpect1("GetBasePath", FunctionArgs.of());
     }
 
     /**
@@ -34,7 +34,7 @@ public class BasicOperations {
      * @return 个数
      */
     public long getDmCount() {
-        return dmSoft.callForLong("GetDmCount");
+        return callForLong("GetDmCount", FunctionArgs.of());
     }
 
     /**
@@ -43,7 +43,7 @@ public class BasicOperations {
      * @return 当前对象的ID值.
      */
     public long getId() {
-        return dmSoft.callForLong("GetID");
+        return callForLong("GetID", FunctionArgs.of());
     }
 
     /**
@@ -91,7 +91,7 @@ public class BasicOperations {
      * -202 : AsmCall平台兼容问题.联系我解决.
      */
     public long getLastError() {
-        return dmSoft.callForLong("GetLastError");
+        return callForLong("GetLastError", FunctionArgs.of());
     }
 
     /**
@@ -100,7 +100,7 @@ public class BasicOperations {
      * @return 以字符串的形式返回当前设置的全局路径
      */
     public String getPath() {
-        return dmSoft.callForString("GetPath");
+        return callForString("GetPath", FunctionArgs.of());
     }
 
     /**
@@ -114,7 +114,7 @@ public class BasicOperations {
      * 必须保证此函数在创建完对象以后立即调用，尤其必须在绑定窗口之前调用，否则可能会出现异常.
      * 如果有多个进程操作同个窗口，必须保证每个进程要么都调用Reg,要么都不要调用Reg，以免出现异常.
      * <p>
-     * -1 : 无法连接网络,(一般原因是用错误注册码或者注册码到期后疯狂注册。注册失败次数过多可能封了一天IP,重启路由器或者明天自动恢复，也可能防火墙拦截,具体原因见https://www.eyy8.vip/thread-2452-1-2.html)
+     * -1 : 无法连接网络,(可能防火墙拦截,如果可以正常访问大漠插件网站，那就可以肯定是被防火墙拦截)
      * -2 : 进程没有以管理员方式运行. (出现在win7 win8 vista 2008.建议关闭uac)
      * 0 : 失败 (未知错误原因是写的代码不对。注册之前没有创建对象。或者没有注册到系统。如果用的免注册到系统可能代码不对。鉴别方法很简单。在代码里ver输出一下大漠版本号如果是空。说明没有注册到系统或免注册系统代码不对)
      * 1 : 成功
@@ -136,7 +136,7 @@ public class BasicOperations {
      *                不可留空. 长度不能超过20. 并且只能包含数字和字母以及小数点. 这个版本信息不是插件版本。而是在网站www.52hsxx.com获取到的附加码.
      */
     public void reg(String regCode, String addCode) {
-        dmSoft.callAndCheckResultEq1("Reg", regCode, addCode);
+        callExpect1("Reg", FunctionArgs.of(regCode, addCode));
     }
 
     /**
@@ -174,7 +174,7 @@ public class BasicOperations {
      *                比如"1.xxx.com|2.xxx.com"。1.xxx.com和2.xxx.com是自己的域名,解析到我的IP即可.
      */
     public void regEx(String regCode, String addCode, String ip) {
-        dmSoft.callAndCheckResultEq1("RegEx", regCode, addCode, ip);
+        callExpect1("RegEx", FunctionArgs.of(regCode, addCode, ip));
     }
 
     /**
@@ -213,7 +213,7 @@ public class BasicOperations {
      *                比如"1.xxx.com|2.xxx.com"。1.xxx.com和2.xxx.com是自己的域名,解析到我的IP即可.
      */
     public void regExNoMac(String regCode, String addCode, String ip) {
-        dmSoft.callAndCheckResultEq1("RegExNoMac", regCode, addCode, ip);
+        callExpect1("RegExNoMac", FunctionArgs.of(regCode, addCode, ip));
     }
 
     /**
@@ -248,7 +248,7 @@ public class BasicOperations {
      *                长度不能超过20. 并且只能包含数字和字母以及小数点. 这个版本信息不是插件版本.而是附加码.
      */
     public void regNoMac(String regCode, String addCode) {
-        dmSoft.callAndCheckResultEq1("RegNoMac", regCode, addCode);
+        callExpect1("RegNoMac", FunctionArgs.of(regCode, addCode));
     }
 
     /**
@@ -265,7 +265,7 @@ public class BasicOperations {
      *             比如文字识别 查找图片 颜色 等等一切图色函数.
      */
     public void setDisplayInput(String mode) {
-        dmSoft.callAndCheckResultEq1("SetDisplayInput", mode);
+        callExpect1("SetDisplayInput", FunctionArgs.of(mode));
     }
 
     /**
@@ -275,7 +275,7 @@ public class BasicOperations {
      * @param delay 单位毫秒
      */
     public void setEnumWindowDelay(long delay) {
-        dmSoft.callAndCheckResultEq1("SetEnumWindowDelay", delay);
+        callExpect1("SetEnumWindowDelay", FunctionArgs.of(delay));
     }
 
     /**
@@ -284,7 +284,7 @@ public class BasicOperations {
      * @param path 路径,可以是相对路径,也可以是绝对路径
      */
     public void setPath(String path) {
-        dmSoft.callAndCheckResultEq1("SetPath", path);
+        callExpect1("SetPath", FunctionArgs.of(path));
     }
 
     /**
@@ -293,7 +293,7 @@ public class BasicOperations {
      * @param show 是否打开
      */
     public void setShowErrorMsg(boolean show) {
-        dmSoft.callAndCheckResultEq1("SetShowErrorMsg", show ? 1 : 0);
+        callExpect1("SetShowErrorMsg", FunctionArgs.of(show));
     }
 
     /**
@@ -310,7 +310,7 @@ public class BasicOperations {
      * @param enable 是否开启加速
      */
     public void speedNormalGraphic(boolean enable) {
-        dmSoft.callAndCheckResultEq1("SpeedNormalGraphic", enable ? 1 : 0);
+        callExpect1("SpeedNormalGraphic", FunctionArgs.of(enable));
     }
 
     /**
@@ -319,6 +319,6 @@ public class BasicOperations {
      * @return 当前插件的版本描述字符串
      */
     public String ver() {
-        return dmSoft.callForString("Ver");
+        return callForString("Ver", FunctionArgs.of());
     }
 }
