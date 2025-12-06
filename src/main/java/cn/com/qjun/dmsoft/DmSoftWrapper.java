@@ -83,10 +83,7 @@ public class DmSoftWrapper implements AutoCloseable {
             LibraryLoader.loadJacobLibrary();
 
             Path dmDll = RuntimeUtils.releaseFileToTempDir("/win32-x86/dm.dll", "dm", ".dll");
-            long dmReg = DmReg.INSTANCE.SetDllPathA(dmDll.toAbsolutePath().toString(), 1);
-            if (dmReg != 1L) {
-                throw new RuntimeException("Load dm.dll failed.");
-            }
+            DmReg.INSTANCE.SetDllPathA(dmDll.toAbsolutePath().toString(), 1);
         } catch (IOException e) {
             throw new RuntimeException("Library release fail.", e);
         }
@@ -100,8 +97,7 @@ public class DmSoftWrapper implements AutoCloseable {
          *
          * @param dllPath dm.dll路径
          * @param mode    0表示STA，1表示MTA
-         * @return 0表示成功
          */
-        int SetDllPathA(String dllPath, int mode);
+        void SetDllPathA(String dllPath, int mode);
     }
 }
