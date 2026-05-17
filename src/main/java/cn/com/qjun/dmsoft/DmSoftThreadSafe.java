@@ -2,6 +2,8 @@ package cn.com.qjun.dmsoft;
 
 import cn.com.qjun.dmsoft.functions.*;
 
+import java.util.function.Function;
+
 /**
  * @author 81062
  * @date 2025/11/24
@@ -68,6 +70,11 @@ public class DmSoftThreadSafe implements AutoCloseable {
     public DmWindowFunctions windowFunctions() {
         DmSoftWrapper dmSoft = getInstance();
         return dmSoft.windowFunctions();
+    }
+
+    public <T> T findFromImage(byte[] backgroundImage, Function<DmSoftWrapper, T> findFunction) {
+        DmSoftWrapper dmSoft = getInstance();
+        return dmSoft.findFromImage(backgroundImage, findFunction);
     }
 
     private DmSoftWrapper getInstance() {

@@ -41,7 +41,9 @@ public class FindResult implements Serializable {
 
     @Data
     @ToString
-    public static class Item {
+    public static class Item implements Serializable {
+        private static final long serialVersionUID = 1607762263931024059L;
+        
         private int index;
         private String name;
         private Point pint;

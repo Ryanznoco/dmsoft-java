@@ -1,6 +1,7 @@
 package cn.com.qjun.dmsoft;
 
 import cn.com.qjun.dmsoft.functions.*;
+import cn.com.qjun.dmsoft.utils.DirectMemoryUtils;
 import cn.com.qjun.dmsoft.utils.RuntimeUtils;
 import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.ComThread;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
+import java.util.function.Function;
 
 /**
  * @author RenQiang
@@ -64,6 +66,13 @@ public class DmSoftWrapper implements AutoCloseable {
         this.windowFunctions = new DmWindowFunctions(component);
         this.id = basicFunctions().getId();
         log.info("创建大漠对象成功: ID={}", this.id);
+    }
+
+    public <T> T findFromImage(byte[] backgroundImage, Function<DmSoftWrapper, T> findFunction) {
+        return DirectMemoryUtils.loadToMemAndApply(backgroundImage, memoryInfo -> {
+            basicFunctions().setDisplayInput(String.format("mem:%d,%d", memoryInfo.getAddress(), memoryInfo.getSize()));
+            return findFunction.apply(this);
+        });
     }
 
     @Override

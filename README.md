@@ -246,13 +246,13 @@ Point point = dmSoft.textFunctions().getResultPos(resultString, 0);
 ### AI 操作 (DmAiFunctions)
 
 ```java
-import cn.com.qjun.dmsoft.model.AiFindResult;
+
 
 // AI 查找图片（需要先加载 AI 模型）
 AiFindResult result = dmSoft.aiFunctions().aiFindPic(
-    Rect.of(0, 0, 800, 600),
-    0,  // 模型索引
-    0.9 // 相似度
+        Rect.of(0, 0, 800, 600),
+        0,  // 模型索引
+        0.9 // 相似度
 );
 ```
 

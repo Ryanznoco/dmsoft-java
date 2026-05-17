@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 描述内存中的一段数据
  *
@@ -13,7 +15,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemoryInfo {
+public class MemoryInfo implements Serializable {
+    private static final long serialVersionUID = 1598192996273186922L;
+
     /**
      * 内存地址
      */

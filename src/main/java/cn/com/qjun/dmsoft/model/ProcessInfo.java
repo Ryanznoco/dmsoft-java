@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 进程信息
  *
@@ -13,7 +15,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProcessInfo {
+public class ProcessInfo implements Serializable {
+    private static final long serialVersionUID = -7859846610138793605L;
+
     /**
      * 进程名称
      */
