@@ -30,11 +30,12 @@ public class DmSoftTest {
 
     @Test
     public void testCapture() {
+        dmSoft.colourFunctions().setPicPwd("12345678");
         dmSoft.backgroundFunctions().bindWindow(9506642L, DisplayMode.DX3, MouseMode.DX, KeypadMode.DX, 0);
         dmSoft.colourFunctions().capture(Rect.of(0, 0, 800, 600), "D:\\temp\\temp.bmp");
         dmSoft.backgroundFunctions().unBindWindow();
     }
-    
+
     @AfterAll
     public static void close() {
         dmSoft.close();
