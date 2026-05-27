@@ -8,6 +8,8 @@ import com.jacob.activeX.ActiveXComponent;
 import com.jacob.com.Variant;
 import lombok.NonNull;
 
+import java.util.logging.Logger;
+
 /**
  * AI相关操作
  *
@@ -15,6 +17,7 @@ import lombok.NonNull;
  * @date 2024/2/14
  */
 public class DmAiFunctions extends AbstractDmFunctions {
+    private static final Logger LOGGER = Logger.getLogger(DmAiFunctions.class.getName());
 
     public DmAiFunctions(@NonNull ActiveXComponent dmSoft) {
         super(dmSoft);
@@ -34,7 +37,8 @@ public class DmAiFunctions extends AbstractDmFunctions {
      */
     public FindResult aiYoloDetectObjects(Rect rect, float prob, float iou) {
         String result = callForString("AiYoloDetectObjects", FunctionArgs.of(rect, prob, iou));
-        return DmResultParser.parseFindResult(result, parts -> new FindResult.Item(parts[0], Integer.parseInt(parts[1]), Rect.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]))));
+        LOGGER.info("大漠AiYoloDetectObjects原始字符串: rect=" + rect + ", prob=" + prob + ", iou=" + iou + ", result=" + result);
+        return DmResultParser.parseFindResult(result, DmAiFunctions::parseYoloDetectedItem);
     }
 
     /**
@@ -49,9 +53,16 @@ public class DmAiFunctions extends AbstractDmFunctions {
      */
     public FindResult aiYoloDetectObjectsAndSort(Rect rect, float prob, float iou, int lineHeight) {
         String result = callForString("AiYoloDetectObjects", FunctionArgs.of(rect, prob, iou));
+        LOGGER.info("大漠AiYoloDetectObjects原始字符串: rect=" + rect + ", prob=" + prob + ", iou=" + iou + ", result=" + result);
         String sortedResult = callForString("AiYoloSortsObjects", FunctionArgs.of(result, lineHeight));
-        return DmResultParser.parseFindResult(sortedResult, parts ->
-                new FindResult.Item(parts[0], Integer.parseInt(parts[1]), Rect.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5]))));
+        LOGGER.info("大漠AiYoloSortsObjects原始字符串: lineHeight=" + lineHeight + ", result=" + sortedResult);
+        return DmResultParser.parseFindResult(sortedResult, DmAiFunctions::parseYoloDetectedItem);
+    }
+
+    static FindResult.Item parseYoloDetectedItem(String[] parts) {
+        return new FindResult.Item(parts[0],
+                Double.parseDouble(parts[1]),
+                Rect.of(Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5])));
     }
 
     /**
@@ -126,6 +137,10 @@ public class DmAiFunctions extends AbstractDmFunctions {
                 callExpect1("AiYoloSetModelMemory", FunctionArgs.of(index, memoryInfo, pwd)));
     }
 
+    public void aiYoloSetModelMemoryInfo(int index, MemoryInfo memoryInfo, String pwd) {
+        callExpect1("AiYoloSetModelMemory", FunctionArgs.of(index, memoryInfo, pwd));
+    }
+
     /**
      * 需要先加载Ai模块. 设置Yolo的版本
      *
@@ -175,5 +190,9 @@ public class DmAiFunctions extends AbstractDmFunctions {
     public int loadAiMemory(byte[] modelData) {
         return DirectMemoryUtils.loadToMemAndApply(modelData, memoryInfo ->
                 (int) callForLong("LoadAiMemory", FunctionArgs.of(memoryInfo)));
+    }
+
+    public int loadAiMemoryInfo(MemoryInfo memoryInfo) {
+        return (int) callForLong("LoadAiMemory", FunctionArgs.of(memoryInfo));
     }
 }

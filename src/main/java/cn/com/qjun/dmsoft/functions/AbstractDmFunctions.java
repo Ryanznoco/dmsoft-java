@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * @author RenQiang
@@ -21,6 +23,7 @@ public abstract class AbstractDmFunctions {
     protected final ActiveXComponent dmSoft;
 
     protected Variant call(String method) {
+        log.info("调用大漠函数: 函数名={}, 参数=[]", method);
         Variant result = dmSoft.invoke(method);
         if (log.isDebugEnabled()) {
             log.debug("调用大漠函数完成: 函数名={}, 返回值={}", method, result);
@@ -32,9 +35,10 @@ public abstract class AbstractDmFunctions {
         if (ArrayUtils.isEmpty(args.variants())) {
             return call(method);
         }
+        log.info("调用大漠函数: 函数名={}, 参数={}", method, formatArgs(args));
         Variant result = dmSoft.invoke(method, args.variants());
         if (log.isDebugEnabled()) {
-            log.debug("调用大漠函数完成: 函数名={}, 参数={}, 返回值={}", method, args.variants(), result);
+            log.debug("调用大漠函数完成: 函数名={}, 参数={}, 返回值={}", method, formatArgs(args), result);
         }
         return result;
     }
@@ -68,14 +72,20 @@ public abstract class AbstractDmFunctions {
         if (!Objects.equals(result, expectResult)) {
             long errorCode = getLastError();
             if (errorCode != 0) {
-                throw new RuntimeException(String.format("调用大漠插件'%s'函数失败, 错误码: %d.", method, errorCode));
+                throw new RuntimeException(String.format("调用大漠插件'%s'函数失败，错误码: %d.", method, errorCode));
             } else {
-                throw new RuntimeException(String.format("调用大漠插件'%s'函数结果为: '%s'不符合预期, 但未获取到错误码.", method, result.toString()));
+                throw new RuntimeException(String.format("调用大漠插件'%s'函数结果为: '%s'不符合预期，但未获取到错误码.", method, result.toString()));
             }
         }
     }
 
     private long getLastError() {
         return call("GetLastError").getInt();
+    }
+
+    private String formatArgs(FunctionArgs args) {
+        return Arrays.stream(args.variants())
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ", "[", "]"));
     }
 }

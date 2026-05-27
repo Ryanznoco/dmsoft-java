@@ -47,7 +47,7 @@ public class FindResult implements Serializable {
         private int index;
         private String name;
         private Point pint;
-        private Integer probability;
+        private Double probability;
         private Rect rect;
 
         public Item(int index, Point point) {
@@ -61,7 +61,7 @@ public class FindResult implements Serializable {
             this.pint = point;
         }
 
-        public Item(String name, int probability, Rect rect) {
+        public Item(String name, double probability, Rect rect) {
             this.name = name;
             this.probability = probability;
             this.rect = rect;
