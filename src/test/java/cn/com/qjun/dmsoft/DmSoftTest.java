@@ -47,6 +47,14 @@ public class DmSoftTest {
     }
 
     @Test
+    public void testOcr() {
+        dmSoft.textFunctions().setDict(0, "D:\\DevTools\\dmsoft\\7.2607\\dm_soft.txt");
+        dmSoft.basicFunctions().setDisplayInput("pic:" + "D:\\LC\\截屏\\Shotcut_00_12_09_233.bmp");
+        String ocr = dmSoft.textFunctions().ocr(765, 551, 790, 560, "d7d7d7-202020|a2a0a1-202020", 0.9);
+        System.out.println(ocr);
+    }
+
+    @Test
     public void testCapture() {
 //        dmSoft.colourFunctions().setPicPwd("12345678");
         dmSoft.backgroundFunctions().bindWindow(1380322L, DisplayMode.DX3, MouseMode.DX, KeypadMode.DX, 0);

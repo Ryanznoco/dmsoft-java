@@ -35,10 +35,10 @@ public abstract class AbstractDmFunctions {
         if (ArrayUtils.isEmpty(args.variants())) {
             return call(method);
         }
-        log.info("调用大漠函数: 函数名={}, 参数={}", method, formatArgs(args));
+        log.info("调用大漠函数: 函数名={}, 参数={}", method, formatArgs(method, args));
         Variant result = dmSoft.invoke(method, args.variants());
         if (log.isDebugEnabled()) {
-            log.debug("调用大漠函数完成: 函数名={}, 参数={}, 返回值={}", method, formatArgs(args), result);
+            log.debug("调用大漠函数完成: 函数名={}, 参数={}, 返回值={}", method, formatArgs(method, args), result);
         }
         return result;
     }
@@ -83,9 +83,42 @@ public abstract class AbstractDmFunctions {
         return call("GetLastError").getInt();
     }
 
-    private String formatArgs(FunctionArgs args) {
-        return Arrays.stream(args.variants())
-                .map(String::valueOf)
+    private String formatArgs(String method, FunctionArgs args) {
+        Variant[] variants = args.variants();
+        return Arrays.stream(variants)
+                .map(variant -> formatArg(method, variants, variant))
                 .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    private String formatArg(String method, Variant[] variants, Variant variant) {
+        for (int i = 0; i < variants.length; i++) {
+            if (variants[i] == variant) {
+                return sensitiveArg(method, i) ? "***" : String.valueOf(variant);
+            }
+        }
+        return String.valueOf(variant);
+    }
+
+    private boolean sensitiveArg(String method, int index) {
+        if (method == null) {
+            return false;
+        }
+        String name = method.toLowerCase();
+        if ("setpicpwd".equals(name) || "setdictpwd".equals(name)) {
+            return index == 0;
+        }
+        if ("encodefile".equals(name) || "decodefile".equals(name)) {
+            return index == 1;
+        }
+        if ("deleteinipwd".equals(name) || "readinipwd".equals(name)) {
+            return index == 3;
+        }
+        if ("enuminikeypwd".equals(name) || "enuminisectionpwd".equals(name)) {
+            return index == 2;
+        }
+        if ("writeinipwd".equals(name)) {
+            return index == 4;
+        }
+        return false;
     }
 }
